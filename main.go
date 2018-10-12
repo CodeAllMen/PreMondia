@@ -45,7 +45,8 @@ func main() {
 	// }
 	// http://payment.mondiamediamena.com/billing-gw/subservice/sendsms?msisdn=48506541080&message=send_test&lang=pl
 	// http://payment.mondiamediamena.com/billing-gw/service/getcustomer?msisdn=48506541080&operatorId=8
-	controllers.MondiaHTTPRequest("http://payment.mondiamediamena.com/billing-gw/subservice/sendsms?msisdn=48506541080&message=send_test&lang=pl")
+
+	controllers.MondiaHTTPRequest("http://login.mondiamediamena.com/billing-gw/service/getcustomer?msisdn=48506541080&operatorId=8")
 	rnd := rand.New(rand.NewSource(time.Now().UnixNano()))
 	vcode := fmt.Sprintf("%03v", rnd.Int31n(1000))
 	fmt.Println(vcode)
