@@ -145,7 +145,7 @@ func MondiaHTTPRequest(URL string) (status string, body []byte) {
 	}
 	defer response.Body.Close()
 	body, err = ioutil.ReadAll(response.Body)
-	fmt.Println(string(body))
+	fmt.Println(string(body), "#########")
 	if err != nil {
 		status = "error"
 		return
