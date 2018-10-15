@@ -265,5 +265,5 @@ type ClickData struct {
 
 func init() {
 	orm.RegisterModel(new(AffTrack), new(Notification), new(Postback), new(Mo),
-		new(BillingHistory), new(ClickData), new(EveryDaySubDatas), new(MdSubscribe), new(UnsubPin))
+		new(BillingHistory), new(ClickData), new(EveryDaySubDatas), new(MdSubscribe), new(UnsubPin), new(MondiaCharge))
 }

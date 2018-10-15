@@ -147,12 +147,12 @@ func (c *UnsubGetCustomer) Post() {
 							return
 						}
 						err := unsub.InsertUnsubData(unsubNotification)
-						if err == nil && unsubNotification.ResponseCode == "1001" {
+						if err == nil && unsubNotification.ResponseCode == "1001" { // 取消订阅成功
 							unsub.UpdateUnsubMoTable(subID)
 							c.TplName = "success.tpl"
 							return
-						} else {
-							c.TplName = "fail.tpl"
+						} else if err == nil && unsubNotification.ResponseCode == "3029" { // 之前已经取消
+							c.TplName = "success.tpl"
 							return
 						}
 					} else {
