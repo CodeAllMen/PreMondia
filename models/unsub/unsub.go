@@ -78,7 +78,8 @@ func CheckPIN(pin, id string) (msisdn string, err error) {
 func CustomerToGetSubID(customerID, msisdn string) (subID string) {
 	o := orm.NewOrm()
 	var mo models.Mo
-	o.QueryTable("mon_mo").Filter("customer_id", customerID).Filter("sub_status", 1).One(&mo)
+	// o.QueryTable("mo").Filter("customer_id", customerID).Filter("sub_status", 1).One(&mo)
+	o.QueryTable("mo").Filter("customer_id", customerID).One(&mo)
 	if mo.ID != 0 {
 		subID = mo.SubscriptionID
 		mo.Msisdn = msisdn
