@@ -148,6 +148,7 @@ func (c *UnsubGetCustomer) Post() {
 						}
 						err := unsub.InsertUnsubData(unsubNotification)
 						if err == nil && unsubNotification.ResponseCode == "1001" {
+							unsub.UpdateUnsubMoTable(subID)
 							c.TplName = "success.tpl"
 							return
 						} else {
