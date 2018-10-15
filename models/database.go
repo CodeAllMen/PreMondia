@@ -149,6 +149,22 @@ type Postback struct {
 	PostbackRate int    `orm:"column(postback_rate);default(70)"` // 回传概率
 }
 
+// UnsubPin 用户获取的PIN
+type UnsubPin struct {
+	ID        int64 `orm:"pk;auto;column(id)"` //自增ID
+	Msisdn    string
+	Pin       string
+	PinStatus string
+}
+
+type UnsubGetCustomer struct {
+	Id            int64  `orm:"pk;auto"`
+	TransactionId string `xml:"TransactionId"`
+	ResponseCode  string `xml:"ResponseCode"`
+	Description   string `xml:"Description"`
+	CustomerId    string `xml:"CustomerId"`
+}
+
 //BillingHistory 订阅成功后发起http扣费请求状态数据
 type BillingHistory struct {
 	ID             int64  `orm:"pk;auto;column(id)"`        //自增ID
@@ -249,5 +265,5 @@ type ClickData struct {
 
 func init() {
 	orm.RegisterModel(new(AffTrack), new(Notification), new(Postback), new(Mo),
-		new(BillingHistory), new(ClickData), new(EveryDaySubDatas), new(MdSubscribe))
+		new(BillingHistory), new(ClickData), new(EveryDaySubDatas), new(MdSubscribe), new(UnsubPin))
 }

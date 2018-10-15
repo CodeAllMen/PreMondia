@@ -21,4 +21,6 @@ func init() {
 
 	//退订请求
 	beego.Router("/unsub", &unsub.UnsubRequestControllers{})
+	beego.Router("/unsubPin", &unsub.SendPINControllers{}) //退订请求发送pin
+	beego.Router("/getCust", &unsub.UnsubGetCustomer{})    // 获取pin之后判断CustomerID 然后退订
 }
