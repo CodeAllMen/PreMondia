@@ -13,7 +13,7 @@ import (
 
 func main() {
 
-	err, body := request.HTTPRequest("http://payment.mondiamediamena.com/billing-gw/service/getcustomer?msisdn=" + "48506541080" + "&operatorId=8")
+	err, body := request.HTTPRequest("http://payment.mondiamediamena.com/billing-gw/subservice/sendsms?customerId=" + "177090195" + "&message=" + "test send sms" + "&lang=pl&operatorId=8")
 	fmt.Println(err, string(body), "!!!!!!!!!!!!!")
 	sd := initial.GetMondiaConf()
 	fmt.Println(sd)
