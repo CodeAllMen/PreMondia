@@ -14,9 +14,9 @@ func GetMondiaHTTPRequst(requestType, SubID, customerID, msisdn, message string)
 		requestURL = "http://payment.mondiamediamena.com/billing-gw/subservice/unsubscribe?subid=" + SubID + "&operatorId=8"
 	case "SendSMS":
 		if customerID != "" {
-			requestURL = "http://payment.mondiamediamena.com/billing-gw/subservice/sendsms?customerId=" + customerID + "&message=" + message + "&lang=en&operatorId=8"
+			requestURL = "http://payment.mondiamediamena.com/billing-gw/subservice/sendsms?customerId=" + customerID + "&message=" + message + "&lang=pl&operatorId=8"
 		} else {
-			requestURL = "http://payment.mondiamediamena.com/billing-gw/subservice/sendsms?msisdn=" + msisdn + "&message=" + message + "&lang=en&operatorId=8"
+			requestURL = "http://payment.mondiamediamena.com/billing-gw/subservice/sendsms?msisdn=" + msisdn + "&message=" + message + "&lang=pl&operatorId=8"
 		}
 	case "GetCustomer":
 		requestURL = "http://payment.mondiamediamena.com/billing-gw/service/getcustomer?msisdn=" + msisdn + "&operatorId=8"
