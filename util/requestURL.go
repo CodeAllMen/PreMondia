@@ -37,7 +37,7 @@ func HttpRequest(subID, types, period, CustomerId, unsubtime string) {
 		urls = fmt.Sprintf("http://www.redlightvideos.com/addsubs?uiid=%s&sign=mondia", subID)
 	}
 	if types == "delete" {
-		urls = fmt.Sprintf("www.redlightvideos.com/delete/user?phone=%s&time=%s", subID, unsubtime)
+		urls = fmt.Sprintf("http://www.redlightvideos.com/delete/user?phone=%s&time=%s", subID, unsubtime)
 	}
 	resp, err := http.Get(urls)
 	if err == nil {

@@ -23,12 +23,13 @@ func (c *GetCustomerControllers) Get() {
 	errorDesc := c.GetString("errorDesc")
 	errorCode := c.GetString("errorCode")
 
-	isSub := sub.CheckUserSubStatus(customerID)
-	if isSub { // 用户已经订阅
-		// 需要将customerID注册一次
-		c.Redirect("http://www.redlightvideos.com/mm/pl?sub="+customerID, 302)
-		return
-	}
+	// isSub := sub.CheckUserSubStatus(customerID)
+	// if isSub { // 用户已经订阅
+	// 	// 需要将customerID注册一次
+	// 	util.HttpRequest(customerID, "register", "video", "", "")
+	// 	c.Redirect("http://www.redlightvideos.com/mm/pl?sub="+customerID, 302)
+	// 	return
+	// }
 
 	trackIDInt, err := strconv.Atoi(trackID)
 	if err != nil {
