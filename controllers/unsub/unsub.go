@@ -30,6 +30,15 @@ type UnsubGetCustomer struct {
 	beego.Controller
 }
 
+type UnsubPage struct {
+	beego.Controller
+}
+
+//Get 退订首页
+func (c *UnsubPage) Get() {
+	c.TplName = "unsub.tpl"
+}
+
 func (c *SendPINControllers) Post() {
 	msisdn := c.GetString("msisdn")
 	rnd := rand.New(rand.NewSource(time.Now().UnixNano()))
