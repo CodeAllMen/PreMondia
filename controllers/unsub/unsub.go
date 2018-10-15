@@ -136,7 +136,7 @@ func (c *UnsubGetCustomer) Post() {
 			if customerData.ResponseCode == "1001" {
 				subID := unsub.CustomerToGetSubID(customerData.CustomerId, msisdn)
 				if subID != "" {
-					unsubURL := "http://payment.mondiamediamena.com/billing-gw/subservice/unsubscribe?subid=" + subID + "operatorId=8"
+					unsubURL := "http://payment.mondiamediamena.com/billing-gw/subservice/unsubscribe?subid=" + subID + "&operatorId=8"
 					status, body := MondiaHTTPRequest(unsubURL)
 					fmt.Println(string(body))
 					if status != "error" {
@@ -155,8 +155,14 @@ func (c *UnsubGetCustomer) Post() {
 							return
 						}
 					} else {
-
+						//  "用户不存在"
+						c.TplName = "fail.tpl"
+						return
 					}
+				} else {
+					//  "用户不存在"
+					c.TplName = "fail.tpl"
+					return
 				}
 			} else {
 				c.TplName = "fail.tpl"
