@@ -31,7 +31,7 @@
 </body>
 <script>
     if ({{.error}}=="0"){
-        alert("Nie znaleziono numeru telefonu. Spróbuj ponownie. \n\n Jeśli problem dotyczy presist, skontaktuj się z obsługą klienta pod adresem support@mondiapay.com)
+        alert("Nie znaleziono numeru telefonu. Spróbuj ponownie. \n\n Jeśli problem dotyczy presist, skontaktuj się z obsługą klienta pod adresem support@mondiapay.com")
     }
     $("#unsub").click(function () {
         if ($("#msisdn").val() == "" || $("#msisdn").val().length < 9||$("#msisdn").val().length>11) {
