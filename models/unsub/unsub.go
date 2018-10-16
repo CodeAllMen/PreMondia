@@ -68,7 +68,7 @@ func CheckPIN(pin, id string) (status bool, msisdn string, err error) {
 		o.QueryTable("unsub_pin").Filter("id", idInt64).One(&pinData)
 		if pinData.ID != 0 {
 			msisdn = pinData.Msisdn
-			if id == pinData.Pin {
+			if pin == pinData.Pin {
 				status = true
 			}
 			return
