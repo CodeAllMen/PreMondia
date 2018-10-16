@@ -22,7 +22,7 @@
 <body>
 	<div class="container">
 		<div class="content" style="margin-top: 50%">
-			<p class="success">SUCCESS</p>
+			<p class="success">POWODZENIE</p>
 			<p class="last">Ten numer telefonu został anulowany z usługi</p>
 		</div>
 	</div>
