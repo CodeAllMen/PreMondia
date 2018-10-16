@@ -60,14 +60,17 @@ func InsertPinData(pinData *models.UnsubPin) (id int64, err error) {
 }
 
 // CheckPIN 检查用户输入的PIN
-func CheckPIN(pin, id string) (msisdn string, err error) {
+func CheckPIN(pin, id string) (status bool, msisdn string, err error) {
 	o := orm.NewOrm()
 	var pinData models.UnsubPin
 	idInt64, err := strconv.ParseInt(id, 10, 64)
 	if err == nil {
-		o.QueryTable("unsub_pin").Filter("id", idInt64).Filter("pin", pin).One(&pinData)
+		o.QueryTable("unsub_pin").Filter("id", idInt64).One(&pinData)
 		if pinData.ID != 0 {
 			msisdn = pinData.Msisdn
+			if id == pinData.Pin {
+				status = true
+			}
 			return
 		}
 	}

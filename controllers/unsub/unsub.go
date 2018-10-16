@@ -123,8 +123,8 @@ func (c *UnsubGetCustomer) Post() {
 	var requestData request.MondiaRequestData
 	pin := c.GetString("pin")
 	id := c.GetString("id")
-	msisdn, _ := unsub.CheckPIN(pin, id)
-	if msisdn != "" {
+	isHasPin, msisdn, _ := unsub.CheckPIN(pin, id)
+	if isHasPin {
 		requestData.Msisdn = msisdn
 		requestData.RequestType = "GetCustomer"
 		// getCustomerURL := "http://payment.mondiamediamena.com/billing-gw/service/getcustomer?msisdn=" + msisdn + "&operatorId=8"
