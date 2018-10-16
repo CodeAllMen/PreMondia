@@ -23,7 +23,7 @@
 	<div class="container">
 		<div class="content" style="margin-top: 50%">
 			<p class="success">SUCCESS</p>
-			<p class="last">This phone number has been unsubscribe from service</p>
+			<p class="last">Ten numer telefonu został anulowany z usługi</p>
 		</div>
 	</div>
 </body>

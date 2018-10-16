@@ -12,6 +12,7 @@ import (
 
 	"github.com/MobileCPX/PreMondia/models"
 	"github.com/MobileCPX/PreMondia/models/unsub"
+	"github.com/MobileCPX/PreMondia/request"
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/logs"
 )
@@ -30,6 +31,7 @@ type UnsubGetCustomer struct {
 	beego.Controller
 }
 
+// UnsubPage 退订页面
 type UnsubPage struct {
 	beego.Controller
 }
@@ -39,23 +41,25 @@ func (c *UnsubPage) Get() {
 	c.TplName = "unsub.tpl"
 }
 
+// Post 退订发送PIN
 func (c *SendPINControllers) Post() {
+	var requestData request.MondiaRequestData
 	msisdn := c.GetString("msisdn")
 	rnd := rand.New(rand.NewSource(time.Now().UnixNano()))
 	pin := fmt.Sprintf("%03v", rnd.Intn(1000))
 	logs.Info("PIN: ", pin)
 	// message := url.QueryEscape("[RedLightVideos] Your unsubscribe PIN code is " + pin)
-	// message := pin
-	message := url.QueryEscape("[RedLightVideos] Kod PIN, który anulowałeś swoją subskrypcję, to " + pin)
-	getPinURL := "http://payment.mondiamediamena.com/billing-gw/subservice/sendsms?operatorId=8&lang=pl&msisdn=" + msisdn + "&message=" + message
-	status, body := MondiaHTTPRequest(getPinURL)
+	requestData.RequestType = "SendSMS"
+	requestData.Message = url.QueryEscape("[RedLightVideos] Kod PIN, który anulowałeś swoją subskrypcję, to " + pin)
+	requestData.Msisdn = msisdn
+	// getPinURL := "http://payment.mondiamediamena.com/billing-gw/subservice/sendsms?operatorId=8&lang=pl&msisdn=" + msisdn + "&message=" + message
+	status, body := request.MondiaHTTPRequest(requestData)
 	fmt.Println(string(body))
 	if status == "error" {
 		c.Data["error"] = "0"
 		c.TplName = "unsub.tpl"
 		return
 	}
-	fmt.Println(string(body))
 	unsubPin := new(models.UnsubPin)
 	unsubPin.Msisdn = msisdn
 	unsubPin.Pin = pin
@@ -117,13 +121,15 @@ func (c *UnsubRequestControllers) Get() {
 
 // Post 退订获取CustomerId Post请求
 func (c *UnsubGetCustomer) Post() {
+	var requestData request.MondiaRequestData
 	pin := c.GetString("pin")
 	id := c.GetString("id")
 	msisdn, _ := unsub.CheckPIN(pin, id)
 	if msisdn != "" {
+		requestData.Msisdn = msisdn
+		requestData.RequestType = "GetCustomer"
 		// getCustomerURL := "http://payment.mondiamediamena.com/billing-gw/service/getcustomer?msisdn=" + msisdn + "&operatorId=8"
-		getCustomerURL := "http://payment.mondiamediamena.com/billing-gw/service/getcustomer?msisdn=" + msisdn + "&operatorId=8"
-		status, body := MondiaHTTPRequest(getCustomerURL)
+		status, body := request.MondiaHTTPRequest(requestData)
 		fmt.Println(string(body))
 		if status == "error" {
 			c.TplName = "fail.tpl"
@@ -136,8 +142,10 @@ func (c *UnsubGetCustomer) Post() {
 			if customerData.ResponseCode == "1001" {
 				subID := unsub.CustomerToGetSubID(customerData.CustomerId, msisdn)
 				if subID != "" {
-					unsubURL := "http://payment.mondiamediamena.com/billing-gw/subservice/unsubscribe?subid=" + subID + "&operatorId=8"
-					status, body := MondiaHTTPRequest(unsubURL)
+					requestData.SubscriptionID = subID
+					requestData.RequestType = "Unsub"
+
+					status, body := request.MondiaHTTPRequest(requestData)
 					fmt.Println(string(body))
 					if status != "error" {
 						unsubNotification := new(models.MondiaCharge)

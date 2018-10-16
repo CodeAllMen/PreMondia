@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/MobileCPX/PreMondia/models"
+	"github.com/MobileCPX/PreMondia/request"
 	"github.com/MobileCPX/PreMondia/util"
 
 	"github.com/astaxie/beego/logs"
@@ -46,6 +47,18 @@ func UpdateOrInsertMo(actionType, subStatus, price string, mo *models.Mo) {
 		mo.PubID = trackData.PubID
 		mo.AffName = trackData.AffName
 		if subStatus == "ACTIVE" {
+			// Send 账号
+			var requestData request.MondiaRequestData
+			requestData.Message = "Witamy w RedLightVideos. Adres URL to http://www.redlightvideos.com/mm/pl. Twój numer konta to " + mo.CustomerID
+			requestData.RequestType = "SendSMS"
+			requestData.CustomerID = mo.CustomerID
+			_, body := request.MondiaHTTPRequest(requestData)
+			if string(body) == "OK" {
+				logs.Info("订阅成功后发送账号成功")
+			} else {
+				logs.Info("订阅成功后发送账号失败")
+			}
+
 			postback, _ := getPostbackURL(mo.AffName)
 			rate := postback.PostbackRate
 			IfIsPostback := postbackRate(mo, rate) //扣量比例  70表示扣百分之三十的量  YES 表示确定不扣量  NO表示扣量

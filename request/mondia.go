@@ -7,26 +7,18 @@ import (
 	"net/url"
 )
 
-// GetMondiaHTTPRequst  像mondia后台发起网络请求
-func GetMondiaHTTPRequst(requestType, SubID, customerID, msisdn, message string) {
-	requestURL := ""
-	switch requestType {
-	case "Unsub":
-		requestURL = "http://payment.mondiamediamena.com/billing-gw/subservice/unsubscribe?subid=" + SubID + "&operatorId=8"
-	case "SendSMS":
-		if customerID != "" {
-			requestURL = "http://payment.mondiamediamena.com/billing-gw/subservice/sendsms?customerId=" + customerID + "&message=" + url.QueryEscape(message) + "&lang=pl&operatorId=8"
-		} else {
-			requestURL = "http://payment.mondiamediamena.com/billing-gw/subservice/sendsms?msisdn=" + msisdn + "&message=" + url.QueryEscape(message) + "&lang=pl&operatorId=8"
-		}
-	case "GetCustomer":
-		requestURL = "http://payment.mondiamediamena.com/billing-gw/service/getcustomer?msisdn=" + msisdn + "&operatorId=8"
-	}
-	fmt.Println(requestURL)
+// MondiaRequestData Mondia网络请求数据
+type MondiaRequestData struct {
+	RequestType    string
+	SubscriptionID string
+	CustomerID     string
+	Msisdn         string
+	Message        string
 }
 
-//HTTPRequest 向mondia 发起http请求
-func HTTPRequest(URL string) (status string, body []byte) {
+// MondiaHTTPRequest 向mondia 发起http请求
+func MondiaHTTPRequest(requestData MondiaRequestData) (status string, body []byte) {
+	URL := GetMondiaHTTPRequst(requestData)
 	client := &http.Client{}
 	fmt.Println(URL)
 	reqest, err := http.NewRequest("GET", URL, nil) //建立一个请求
@@ -50,4 +42,23 @@ func HTTPRequest(URL string) (status string, body []byte) {
 		return
 	}
 	return
+}
+
+// GetMondiaHTTPRequst  像mondia后台发起网络请求
+func GetMondiaHTTPRequst(requestData MondiaRequestData) string {
+	requestURL := ""
+	switch requestData.RequestType {
+	case "Unsub":
+		requestURL = "http://payment.mondiamediamena.com/billing-gw/subservice/unsubscribe?subid=" + requestData.SubscriptionID + "&operatorId=8"
+	case "SendSMS":
+		if requestData.CustomerID != "" {
+			requestURL = "http://payment.mondiamediamena.com/billing-gw/subservice/sendsms?customerId=" + requestData.CustomerID + "&message=" + url.QueryEscape(requestData.Message) + "&lang=pl&operatorId=8"
+		} else {
+			requestURL = "http://payment.mondiamediamena.com/billing-gw/subservice/sendsms?msisdn=" + requestData.Msisdn + "&message=" + url.QueryEscape(requestData.Message) + "&lang=pl&operatorId=8"
+		}
+	case "GetCustomer":
+		requestURL = "http://payment.mondiamediamena.com/billing-gw/service/getcustomer?msisdn=" + requestData.Msisdn + "&operatorId=8"
+	}
+	return requestURL
+	// fmt.Println(requestURL)
 }

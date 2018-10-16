@@ -14,7 +14,7 @@
 
         .success {
             color: #fc0f1b;
-            font-size: 25px;
+            font-size: 37px;
         }
 
         .retry {
@@ -30,11 +30,11 @@
 
 <body>
     <div class="container">
-        <div class="content" style="margin-top: 50%">
-            <p class="success">FAILED</p>
-            <p class="last">Mobile number or PIN is wrong</p>
-            <a type="button" class="unsub retry">Retry</a>
-            <a type="button" class="unsub back">Go to HOME</a>
+        <div class="content" style="margin-top: 34%">
+            <p class="success">Zawieść</p>
+            <p class="last">Numer telefonu komórkowego lub PIN jest nieprawidłowy</p>
+            <a id="retry" type="button" class="unsub retry" onClick="location.href='/unsub'">Retry</a>
+            <a id="go_home" type="button" class="unsub back" onClick="location.href='http://www.redlightvideos.com/lp/mm/pl/index.html'">Go to HOME </a>
         </div>
     </div>
 </body>
