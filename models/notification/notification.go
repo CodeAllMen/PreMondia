@@ -46,18 +46,20 @@ func UpdateOrInsertMo(actionType, subStatus, price string, mo *models.Mo) {
 		mo.ProID = trackData.ProID
 		mo.PubID = trackData.PubID
 		mo.AffName = trackData.AffName
+
+		// Send 账号
+		var requestData request.MondiaRequestData
+		requestData.Message = "Witamy w RedLightVideos. Adres URL to http://www.redlightvideos.com/mm/pl. Twój numer konta to " + mo.CustomerID
+		requestData.RequestType = "SendSMS"
+		requestData.CustomerID = mo.CustomerID
+		_, body := request.MondiaHTTPRequest(requestData)
+		if string(body) == "OK" {
+			logs.Info("订阅成功后发送账号成功")
+		} else {
+			logs.Info("订阅成功后发送账号失败")
+		}
+
 		if subStatus == "ACTIVE" {
-			// Send 账号
-			var requestData request.MondiaRequestData
-			requestData.Message = "Witamy w RedLightVideos. Adres URL to http://www.redlightvideos.com/mm/pl. Twój numer konta to " + mo.CustomerID
-			requestData.RequestType = "SendSMS"
-			requestData.CustomerID = mo.CustomerID
-			_, body := request.MondiaHTTPRequest(requestData)
-			if string(body) == "OK" {
-				logs.Info("订阅成功后发送账号成功")
-			} else {
-				logs.Info("订阅成功后发送账号失败")
-			}
 
 			postback, _ := getPostbackURL(mo.AffName)
 			rate := postback.PostbackRate

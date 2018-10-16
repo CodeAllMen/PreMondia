@@ -36,7 +36,7 @@ func (c *MondiaSubscribeController) Get() {
 	sub.InsertSubscribe(subNotification)
 	// 3001 已经注册过
 	if (status == "SUCCESS" || errorCode == "3001") && subStatus == "ACTIVE" {
-		util.HttpRequest(subNotification.CustomerID, "register", "video", subNotification.SubscriptionID, "")
+		util.HttpRequest(subNotification.SubscriptionID, "register", "video", subNotification.SubscriptionID, "")
 		c.Redirect("http://www.redlightvideos.com/mm/pl?sub="+subNotification.SubscriptionID, 302)
 	} else if subStatus == "SUSPENDED" {
 		c.Redirect("http://www.redlightvideos.com/mm/pl?sub="+subNotification.SubscriptionID, 302)

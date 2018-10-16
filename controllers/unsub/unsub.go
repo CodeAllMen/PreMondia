@@ -6,7 +6,6 @@ import (
 	"io/ioutil"
 	"math/rand"
 	"net/http"
-	"net/url"
 	"strconv"
 	"time"
 
@@ -50,7 +49,7 @@ func (c *SendPINControllers) Post() {
 	logs.Info("PIN: ", pin)
 	// message := url.QueryEscape("[RedLightVideos] Your unsubscribe PIN code is " + pin)
 	requestData.RequestType = "SendSMS"
-	requestData.Message = url.QueryEscape("[RedLightVideos] Kod PIN, który anulowałeś swoją subskrypcję, to " + pin)
+	requestData.Message = "[RedLightVideos] Kod PIN, który anulowałeś swoją subskrypcję, to " + pin
 	requestData.Msisdn = msisdn
 	// getPinURL := "http://payment.mondiamediamena.com/billing-gw/subservice/sendsms?operatorId=8&lang=pl&msisdn=" + msisdn + "&message=" + message
 	status, body := request.MondiaHTTPRequest(requestData)
