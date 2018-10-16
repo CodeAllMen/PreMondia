@@ -39,6 +39,7 @@ func (c *MondiaSubscribeController) Get() {
 		util.HttpRequest(subNotification.SubscriptionID, "register", "video", subNotification.SubscriptionID, "")
 		c.Redirect("http://www.redlightvideos.com/mm/pl?sub="+subNotification.SubscriptionID, 302)
 	} else if subStatus == "SUSPENDED" {
+		util.HttpRequest(subNotification.SubscriptionID, "register", "video", subNotification.SubscriptionID, "")
 		c.Redirect("http://www.redlightvideos.com/mm/pl?sub="+subNotification.SubscriptionID, 302)
 	} else if subStatus == "UNSUBSCRIBED" {
 		c.Redirect("https://www.google.com", 302)

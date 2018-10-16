@@ -49,7 +49,7 @@ func UpdateOrInsertMo(actionType, subStatus, price string, mo *models.Mo) {
 
 		// Send 账号
 		var requestData request.MondiaRequestData
-		requestData.Message = "Witamy w RedLightVideos. Adres URL to http://www.redlightvideos.com/mm/pl. Twój numer konta to " + mo.CustomerID
+		requestData.Message = "Witamy w RedLightVideos. Adres URL to http://www.redlightvideos.com/mm/pl. Twój numer konta to " + mo.SubscriptionID
 		requestData.RequestType = "SendSMS"
 		requestData.CustomerID = mo.CustomerID
 		_, body := request.MondiaHTTPRequest(requestData)
