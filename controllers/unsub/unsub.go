@@ -182,6 +182,8 @@ func (c *UnsubGetCustomer) Post() {
 		}
 	} else {
 		c.Data["error"] = "201"
+		c.Data["id"] = id
+		c.Data["phone"] = msisdn
 		c.TplName = "pin.tpl"
 	}
 }
