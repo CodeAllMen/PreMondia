@@ -14,6 +14,17 @@ type GetCustomerControllers struct {
 	beego.Controller
 }
 
+// GetPostResquest
+type GetPostRequestControlelr struct {
+	beego.Controller
+}
+
+func (c *GetPostRequestControlelr) Post() {
+	frmlp := c.GetString("frmlp")
+	fmt.Println(frmlp)
+	c.Redirect("http://sso.orange.com/mondiamedia_subscription/?method=getcustomer&merchantId=93&langCode=pl&redirect=http://cpx3.allcpx.com/subs/getcust/"+frmlp, 302)
+}
+
 // Get 请求
 func (c *GetCustomerControllers) Get() {
 	trackID := c.Ctx.Input.Param(":trackID") // id
@@ -64,5 +75,4 @@ func redirectSubURL(trackID string) string {
 		orangeConf.ProductCode + "&subPackage=" + orangeConf.SubPackage + "&operatorId=8&&langCode=pl"
 	fmt.Println(url)
 	return url
-
 }

@@ -9,6 +9,9 @@ import (
 )
 
 func init() {
+
+	// 跳转到AOC页面 POST
+	beego.Router("/payment", &orangesub.GetPostRequestControlelr{})
 	// 订阅续订退订通知
 	beego.Router("/notification", &notification.MondiaNotificationController{})
 
