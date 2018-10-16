@@ -37,9 +37,9 @@ func (c *MondiaSubscribeController) Get() {
 	// 3001 已经注册过
 	if (status == "SUCCESS" || errorCode == "3001") && subStatus == "ACTIVE" {
 		util.HttpRequest(subNotification.CustomerID, "register", "video", subNotification.SubscriptionID, "")
-		c.Redirect("http://www.redlightvideos.com/mm/pl?sub="+subNotification.CustomerID, 302)
+		c.Redirect("http://www.redlightvideos.com/mm/pl?sub="+subNotification.SubscriptionID, 302)
 	} else if subStatus == "SUSPENDED" {
-		c.Redirect("http://www.redlightvideos.com/mm/pl?sub="+subNotification.CustomerID, 302)
+		c.Redirect("http://www.redlightvideos.com/mm/pl?sub="+subNotification.SubscriptionID, 302)
 	} else if subStatus == "UNSUBSCRIBED" {
 		c.Redirect("https://www.google.com", 302)
 	} else {

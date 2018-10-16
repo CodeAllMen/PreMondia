@@ -25,7 +25,7 @@
                 <input class="fill_num m-b" id="pin" name="pin" placeholder="PIN : XXX" />
                 <input class="noexit" id="id" name="id" value="{{.id}}"/>
                 <p class="ver">Wprowadź kod PIN otrzymany w SMS-ie</p>
-                <a type="button" class="unsub" id="ver">Verify</a>
+                <a type="button" class="unsub" id="ver">zweryfikować</a>
             </form>
         </div>
     </div>
