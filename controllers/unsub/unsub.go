@@ -37,8 +37,8 @@ type UnsubPage struct {
 
 //Get 退订首页
 func (c *UnsubPage) Get() {
-	// c.TplName = "unsub.tpl"
-	c.TplName = "success.tpl"
+	c.TplName = "unsub.tpl"
+	// c.TplName = "success.tpl"
 }
 
 // Post 退订发送PIN
