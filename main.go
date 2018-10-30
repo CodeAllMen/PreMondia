@@ -13,7 +13,6 @@ func main() {
 	logs.SetLogger(logs.AdapterFile, `{"filename":"/mondia/logs/mondia.log","level":6,"maxlines":100000000,"daily":true,"maxdays":10000}`)
 	logs.Async(1e3)
 	logs.EnableFuncCallDepth(true)
-	// sub.CheckTodaySubNum(10)
 	beego.InsertFilter("*", beego.BeforeRouter, cors.Allow(&cors.Options{
 		AllowAllOrigins: true,
 		AllowMethods:    []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
