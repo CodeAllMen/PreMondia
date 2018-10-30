@@ -34,7 +34,7 @@ func (c *MondiaSubscribeController) Get() {
 	subNotification.ViewName = viewName
 	subNotification.ErrorDesc = errorDesc
 	sub.InsertSubscribe(subNotification)
-	// 3001 已经注册过
+	// 3001 已经注册过     "SUCCESS" 表示订阅成功
 	if (status == "SUCCESS" || errorCode == "3001") && subStatus == "ACTIVE" {
 		util.HttpRequest(subNotification.SubscriptionID, "register", "video", subNotification.SubscriptionID, "")
 		c.Redirect("http://www.redlightvideos.com/mm/pl?sub="+subNotification.SubscriptionID, 302)

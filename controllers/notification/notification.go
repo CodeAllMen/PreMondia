@@ -2,8 +2,9 @@ package notification
 
 import (
 	"encoding/xml"
-	"fmt"
 	"io/ioutil"
+
+	"github.com/astaxie/beego/logs"
 
 	"github.com/MobileCPX/PreMondia/models"
 	"github.com/MobileCPX/PreMondia/models/notification"
@@ -21,9 +22,7 @@ func (c *MondiaNotificationController) Post() {
 	body := c.Ctx.Request.Body
 	data, _ := ioutil.ReadAll(body)
 	modiaNotification := models.Notification{}
-	fmt.Println(string(data))
 	err := xml.Unmarshal(data, &modiaNotification)
-	fmt.Println(&modiaNotification)
 	mo := new(models.Mo)
 	if err == nil { // 更新mo表（新增订阅，退订，续订）
 		mo.Price = modiaNotification.Price
@@ -38,4 +37,7 @@ func (c *MondiaNotificationController) Post() {
 	}
 	notification.InsertCharge(modiaNotification)
 	c.Ctx.WriteString("ok")
+
+	// 打印通知信息
+	logs.Info("notification: ", string(data))
 }

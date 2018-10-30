@@ -1,21 +1,19 @@
 package main
 
 import (
-	"fmt"
-
-	"github.com/MobileCPX/PreMondia/initial"
 	_ "github.com/MobileCPX/PreMondia/initial"
 	_ "github.com/MobileCPX/PreMondia/routers"
 	"github.com/astaxie/beego"
+	"github.com/astaxie/beego/logs"
 	"github.com/astaxie/beego/plugins/cors"
 )
 
 func main() {
 
-	// err, body := request.HTTPRequest("http://payment.mondiamediamena.com/billing-gw/subservice/sendsms?customerId=" + "177090195" + "&message=" + url.QueryEscape("test send sms") + "&lang=pl&operatorId=8")
-	// fmt.Println(err, string(body), "!!!!!!!!!!!!!")
-	sd := initial.GetMondiaConf()
-	fmt.Println(sd)
+	logs.SetLogger(logs.AdapterFile, `{"filename":"/mondia/logs/mondia.log","level":6,"maxlines":100000000,"daily":true,"maxdays":10000}`)
+	logs.Async(1e3)
+	logs.EnableFuncCallDepth(true)
+
 	beego.InsertFilter("*", beego.BeforeRouter, cors.Allow(&cors.Options{
 		AllowAllOrigins: true,
 		AllowMethods:    []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},

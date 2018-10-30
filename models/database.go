@@ -28,21 +28,6 @@ type AffTrack struct {
 
 }
 
-// // Notification 所有交易通知（订阅，退订，续订）
-// type Notification struct {
-// 	// Notification 必须要有的参数
-// 	ID               int64  `orm:"pk;auto;column(id)"`                 //自增ID
-// 	SubscriptionID   string `orm:"column(subscription_id)"`            // 订阅id
-// 	NotificationType string `orm:"column(notification_type);size(15)"` // 通知类型
-// 	Sendtime         string `orm:"column(sendtime);size(30)"`          // 点击时间
-
-// 	Msisdn      string `orm:"size(20)"`
-// 	Operator    string `orm:"size(20)"`
-// 	ServiceID   string
-// 	ServiceType string `orm:"size(15)"`
-// 	ErrorCode   string
-// }
-
 // Notification 订阅通知信息
 type Notification struct {
 	// Notification 必须要有的参数
@@ -123,6 +108,19 @@ type MondiaCharge struct {
 	NextAction         string `xml:"NextAction"`
 	NextActionDate     string `xml:"NextActionDate"`
 	BillingStatus      string `xml:"BillingStatus"`
+}
+
+// AlreadySub // 网盟重复推送已经订阅过的用户统计
+type AlreadySub struct {
+	ID         int64  `orm:"pk;auto;column(id)"` //自增ID
+	CustomerID string `orm:"column(Customer_id)"`
+	AffName    string `orm:"column(aff_name);size(30)"`  // 网盟名称
+	PubID      string `orm:"column(pub_id);size(100)"`   // 子渠道
+	ProID      string `orm:"column(pro_id);size(30)"`    // 服务id（可有可无）
+	ClickID    string `orm:"column(click_id);size(100)"` // 点击
+	CanvasID   string `orm:"column(canvas_id)"`          // 帆布ID
+	TrackID    int64  `orm:"column(track_id)"`           //自增ID
+	Sendtime   string `orm:"column(sendtime);size(30)"`  // 扣费时间
 }
 
 type MdSubscribe struct {
@@ -265,5 +263,5 @@ type ClickData struct {
 
 func init() {
 	orm.RegisterModel(new(AffTrack), new(Notification), new(Postback), new(Mo),
-		new(BillingHistory), new(ClickData), new(EveryDaySubDatas), new(MdSubscribe), new(UnsubPin), new(MondiaCharge))
+		new(BillingHistory), new(ClickData), new(EveryDaySubDatas), new(MdSubscribe), new(UnsubPin), new(MondiaCharge), new(AlreadySub))
 }

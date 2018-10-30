@@ -21,7 +21,7 @@ func InsertTrack(trackData *models.AffTrack) (int64, error) {
 }
 
 // GetAffTrackData 根据track自增id查询此次点击信息
-func GetAffTrackData(trackID int) (*models.AffTrack, bool) {
+func GetAffTrackData(trackID string) (*models.AffTrack, bool) {
 	o := orm.NewOrm()
 	o.Using("default")
 	trackData := new(models.AffTrack)
@@ -44,4 +44,19 @@ func UpdateTrackData(trackData *models.AffTrack) error {
 		logs.Error("更新数据track数据失败")
 	}
 	return err
+}
+
+// TrackInsertCanvasID 点击订阅按钮存入页面指纹信息
+func TrackInsertCanvasID(trackID, canvasID string) {
+	o := orm.NewOrm()
+	o.Using("default")
+	var track models.AffTrack
+	o.QueryTable("aff_track").Filter("track_id", trackID).One(&track)
+	if track.TrackID != 0 {
+		track.CanvasID = canvasID
+		_, err := o.Update(&track)
+		if err != nil {
+			logs.Error("更新track错误，插入canvasID错误")
+		}
+	}
 }

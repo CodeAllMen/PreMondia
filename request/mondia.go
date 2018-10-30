@@ -60,5 +60,4 @@ func GetMondiaHTTPRequst(requestData MondiaRequestData) string {
 		requestURL = "http://payment.mondiamediamena.com/billing-gw/service/getcustomer?msisdn=" + requestData.Msisdn + "&operatorId=8"
 	}
 	return requestURL
-	// fmt.Println(requestURL)
 }

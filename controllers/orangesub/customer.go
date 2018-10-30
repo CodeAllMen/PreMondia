@@ -2,10 +2,10 @@ package orangesub
 
 import (
 	"fmt"
-	"strconv"
 
 	"github.com/MobileCPX/PreMondia/initial"
 	"github.com/MobileCPX/PreMondia/models/sub"
+	"github.com/MobileCPX/PreMondia/util"
 	"github.com/astaxie/beego"
 )
 
@@ -20,9 +20,10 @@ type GetPostRequestControlelr struct {
 }
 
 func (c *GetPostRequestControlelr) Post() {
-	frmlp := c.GetString("frmlp")
-	fmt.Println(frmlp)
-	c.Redirect("http://sso.orange.com/mondiamedia_subscription/?method=getcustomer&merchantId=93&langCode=pl&redirect=http://cpx3.allcpx.com/subs/getcust/"+frmlp, 302)
+	trackID := c.GetString("frmlp")
+	canvasID := c.GetString("canvas_id")
+	sub.TrackInsertCanvasID(trackID, canvasID)
+	c.Redirect("http://sso.orange.com/mondiamedia_subscription/?method=getcustomer&merchantId=93&langCode=pl&redirect=http://cpx3.allcpx.com/subs/getcust/"+trackID, 302)
 }
 
 // Get 请求
@@ -34,21 +35,18 @@ func (c *GetCustomerControllers) Get() {
 	errorDesc := c.GetString("errorDesc")
 	errorCode := c.GetString("errorCode")
 
-	// isSub, subID := sub.CheckUserSubStatus(customerID)
-	// if isSub { // 用户已经订阅
-	// 	// 需要将customerID注册一次
-	// 	util.HttpRequest(subID, "register", "video", "", "")
-	// 	c.Redirect("http://www.redlightvideos.com/mm/pl?sub="+subID, 302)
-	// 	return
-	// }
-
-	trackIDInt, err := strconv.Atoi(trackID)
-	if err != nil {
-		c.Redirect("http://google.com", 302)
+	isSub, subID := sub.CheckUserSubStatus(customerID)
+	if isSub { // 用户已经订阅
+		// 将customerID注册一次,防止用户未注册，不能使用我们的服务
+		util.HttpRequest(subID, "register", "video", "", "")
+		c.Redirect("http://www.redlightvideos.com/mm/pl?sub="+subID, 302)
+		// 记录网盟重复送量的数据
+		sub.InsertHaveSubData(trackID, customerID)
 		return
 	}
+
 	// 获取 tracking 数据
-	trackData, isHas := sub.GetAffTrackData(trackIDInt)
+	trackData, isHas := sub.GetAffTrackData(trackID)
 	if !isHas {
 		c.Redirect("http://google.com", 302)
 		return
@@ -58,7 +56,7 @@ func (c *GetCustomerControllers) Get() {
 	trackData.Operator = operatorCountry
 	trackData.CustomerID = customerID
 	trackData.Status = status
-	err = sub.UpdateTrackData(trackData)
+	err := sub.UpdateTrackData(trackData)
 	if err != nil {
 		c.Redirect("http://google.com", 302)
 		return

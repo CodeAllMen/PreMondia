@@ -5,6 +5,7 @@ import (
 
 	"github.com/MobileCPX/PreMondia/models"
 	"github.com/MobileCPX/PreMondia/models/sub"
+	"github.com/MobileCPX/PreMondia/util"
 
 	"github.com/astaxie/beego"
 )
@@ -22,6 +23,10 @@ func (c *LPTrackClickControllers) Get() {
 	affTrack.ClickID = c.GetString("clickId")
 	affTrack.PubID = c.GetString("pubId")
 	affTrack.ProID = c.GetString("proId")
+
+	affTrack.Refer = c.Ctx.Input.Refer()           // 获取refer信息
+	affTrack.IP = util.GetIPAddress(c.Ctx.Request) // 用户的ip地址
+	affTrack.UserAgent = c.Ctx.Input.UserAgent()   //用户设备信息
 
 	id, err := sub.InsertTrack(affTrack)
 	if err == nil {

@@ -2,6 +2,7 @@ package sub
 
 import (
 	"github.com/MobileCPX/PreMondia/models"
+	"github.com/MobileCPX/PreMondia/util"
 	"github.com/astaxie/beego/orm"
 )
 
@@ -13,6 +14,25 @@ func CheckUserSubStatus(customerID string) (isSub bool, subID string) {
 	if mo.ID != 0 {
 		isSub = true
 		subID = mo.SubscriptionID
+
 	}
 	return
+}
+
+// InsertHaveSubData 插入已经订阅的用户数据
+func InsertHaveSubData(trackID, customerID string) {
+	o := orm.NewOrm()
+	var track models.AffTrack
+	o.QueryTable("aff_track").Filter("track_id", trackID).One(&track)
+	if track.TrackID != 0 {
+		var alreadySub models.AlreadySub
+		alreadySub.AffName = track.AffName
+		alreadySub.ClickID = track.ClickID
+		alreadySub.PubID = track.PubID
+		alreadySub.CustomerID = customerID
+		alreadySub.CanvasID = track.CanvasID
+		alreadySub.TrackID = track.TrackID
+		alreadySub.Sendtime, _ = util.GetDatetime()
+		o.Insert(&alreadySub)
+	}
 }
