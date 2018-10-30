@@ -3,6 +3,8 @@ package orangesub
 import (
 	"fmt"
 
+	"github.com/astaxie/beego/logs"
+
 	"github.com/MobileCPX/PreMondia/initial"
 	"github.com/MobileCPX/PreMondia/models/sub"
 	"github.com/MobileCPX/PreMondia/util"
@@ -62,6 +64,11 @@ func (c *GetCustomerControllers) Get() {
 		return
 	}
 	subURL := redirectSubURL(trackID)
+	isLimitSub := sub.CheckTodaySubNum(49) // 判断今日订阅数量是否超过限制
+	if isLimitSub {
+		logs.Info("订阅数量超过 ", 49, " 页面跳转到谷歌")
+		subURL = "http://www.google.com"
+	}
 	c.Redirect(subURL, 302)
 }
 

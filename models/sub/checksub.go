@@ -1,6 +1,10 @@
 package sub
 
 import (
+	"fmt"
+
+	"github.com/astaxie/beego/logs"
+
 	"github.com/MobileCPX/PreMondia/models"
 	"github.com/MobileCPX/PreMondia/util"
 	"github.com/astaxie/beego/orm"
@@ -16,6 +20,23 @@ func CheckUserSubStatus(customerID string) (isSub bool, subID string) {
 		subID = mo.SubscriptionID
 
 	}
+	return
+}
+
+// CheckTodaySubNum 检查今日订阅数量
+func CheckTodaySubNum(limitNum int) (limitSub bool) {
+	o := orm.NewOrm()
+	var todaySub struct {
+		SubNum int // 今日订阅数量
+	}
+	_, todayDate := util.GetDatetime()
+	SQL := fmt.Sprintf("SELECT COUNT(1) as sub_num FROM mo WHERE left(sub_time,10) = '%s' ", todayDate)
+	o.Raw(SQL).QueryRow(&todaySub)
+	fmt.Println(todaySub.SubNum)
+	if todaySub.SubNum >= limitNum {
+		limitSub = true
+	}
+	logs.Info(todayDate, "： 今日订阅数 ", todaySub.SubNum, " 限制订阅数量： ", limitNum)
 	return
 }
 
