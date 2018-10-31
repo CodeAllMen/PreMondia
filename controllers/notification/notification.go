@@ -21,6 +21,7 @@ type MondiaNotificationController struct {
 func (c *MondiaNotificationController) Post() {
 	body := c.Ctx.Request.Body
 	data, _ := ioutil.ReadAll(body)
+	logs.Info("notification", string(data))
 	modiaNotification := models.Notification{}
 	err := xml.Unmarshal(data, &modiaNotification)
 	mo := new(models.Mo)

@@ -33,8 +33,7 @@ func UpdateOrInsertMo(actionType, subStatus, price string, mo *models.Mo) {
 	// var mo models.Mo
 	nowTime, _ := util.GetDatetime()
 	if actionType == "SUBSCRIBE" {
-		trackID := getMdSubscribeTableTrackID(mo.CustomerID)
-		trackID = "1"
+		trackID := GetMdSubscribeTableTrackID(mo.CustomerID)
 		if trackID == "" {
 			return
 		}
@@ -109,7 +108,7 @@ func UpdateOrInsertMo(actionType, subStatus, price string, mo *models.Mo) {
 	}
 }
 
-func getMdSubscribeTableTrackID(customerID string) (trackID string) {
+func GetMdSubscribeTableTrackID(customerID string) (trackID string) {
 	o := orm.NewOrm()
 	var mdSubscribe models.MdSubscribe
 	o.QueryTable("md_subscribe").Filter("customer_id", customerID).OrderBy("-id").One(&mdSubscribe)

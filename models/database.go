@@ -23,7 +23,7 @@ type AffTrack struct {
 	ErrorCode  string `orm:"column(error_code)"` // 订阅失败代码
 	ErrorDesc  string `orm:"column(error_desc)"`
 	Status     string
-	CustomerID string `orm:"column(Customer_id)"`
+	CustomerID string `orm:"column(customer_id)"`
 	Channel    string `orm:"size(20)"` // 订阅渠道
 
 }
@@ -113,7 +113,7 @@ type MondiaCharge struct {
 // AlreadySub // 网盟重复推送已经订阅过的用户统计
 type AlreadySub struct {
 	ID         int64  `orm:"pk;auto;column(id)"` //自增ID
-	CustomerID string `orm:"column(Customer_id)"`
+	CustomerID string `orm:"column(customer_id)"`
 	AffName    string `orm:"column(aff_name);size(30)"`  // 网盟名称
 	PubID      string `orm:"column(pub_id);size(100)"`   // 子渠道
 	ProID      string `orm:"column(pro_id);size(30)"`    // 服务id（可有可无）
