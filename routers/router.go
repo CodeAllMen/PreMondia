@@ -1,6 +1,7 @@
 package routers
 
 import (
+	"github.com/MobileCPX/PreMondia/controllers/checksubnum"
 	"github.com/MobileCPX/PreMondia/controllers/notification"
 	"github.com/MobileCPX/PreMondia/controllers/orangesub"
 	"github.com/MobileCPX/PreMondia/controllers/searchAPI"
@@ -35,4 +36,7 @@ func init() {
 	beego.Router("/quality", &searchAPI.SubscribeQualityController{})                 //渠道质量检查
 	beego.Router("/sub/mo_data", &searchAPI.AnytimeProfitAndLossController{})         // 查询任意时间订阅任意时间数据
 	beego.Router("/sub/everyday/data", &searchAPI.EverydaySubscribeDataControllers{}) // 每日数据统计查询
+
+	// CheckSubNum 检查订阅数量
+	beego.Router("/check/sub/num", &checksubnum.CheckSubNum{})
 }
