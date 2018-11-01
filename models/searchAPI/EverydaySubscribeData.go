@@ -73,7 +73,7 @@ func GetPubIdModels(aff_name string) []string {
 	o := orm.NewOrm()
 	var pub_list []PubidList
 	var pubList []string
-	o.Raw(fmt.Sprintf("select DISTINCT pub_id from nth_mo where aff_name='%s'", aff_name)).QueryRows(&pub_list)
+	o.Raw(fmt.Sprintf("select DISTINCT pub_id from mo where aff_name='%s'", aff_name)).QueryRows(&pub_list)
 	for _, k := range pub_list {
 		pubList = append(pubList, k.PubId)
 	}
@@ -297,7 +297,7 @@ func SearceMoDetailedData(affName, pubId, operator_name, serviceType, subStartDa
 	//	"count(case when t.action='UNSUBSCRIBE' and t.subscription_status='UNSUBSCRIBED' then 1 else null end) as Unsub_Num," +
 	//	"count(case when t.action='SUBSCRIBE' and t.postback_status = 1 then 1 else null end) as Postback_Num " +
 	//	" from (select distinct b.aff_name,b.pub_id, action,subscription_status,a.subscription_id,b.postback_status,left(sendtime,10) as date from notification as a " +
-	//	"left join mon_mo as b on a.subscription_id = b.subscription_id where left(sendtime,10)>='%s' and left(sendtime,10)<='%s' and left(subtime,10)='%s'  %s) as t group by date order by date",sub_time,end_time,sub_time,add_filter)
+	//	"left join mon_mo as b on a.subscription_id = b.subscription_id where left(sendtime,10)>='%s' and left(sendtime,10)<='%s' and left(sub_time,10)='%s'  %s) as t group by date order by date",sub_time,end_time,sub_time,add_filter)
 
 	subNum_sql := "count(case when t.action='SUBSCRIBE' then 1 else null end)"
 	unsubNum_sql := "count(case when t.action='UNSUBSCRIBE' and t.subscription_status='UNSUBSCRIBED' then 1 else null end)"
@@ -308,7 +308,7 @@ func SearceMoDetailedData(affName, pubId, operator_name, serviceType, subStartDa
 	total := fmt.Sprintf("select t.aff_name,t.operator,t.service_type as service_name, %s as sub_num, %s as unsub_num, %s as "+
 		"success_mt, %s as failed_mt, %s as postback_num from (select distinct b.aff_name,b.pub_id,b.operator,b.service_type, action,subscription_status,a.subscription_id,b.postback_status,left(sendtime,10) as date from notification as a "+
 		"left join mon_mo as b on a.subscription_id = b.subscription_id where a.sendtime<'%s' and "+
-		"a.sendtime>'%s' and b.subtime>'%s' and b.subtime<'%s' %s ) as t  group by t.aff_name,t.operator,t.service_type order by t.operator,t.service_type;",
+		"a.sendtime>'%s' and b.sub_time>'%s' and b.sub_time<'%s' %s ) as t  group by t.aff_name,t.operator,t.service_type order by t.operator,t.service_type;",
 		subNum_sql, unsubNum_sql, successMtNum_sql, failedMtNum_sql, postbackNum_sql, endDate, startDate, subStartDate, subEndDate, sqlFilter)
 	fmt.Println(total)
 	var subData []DateSubDetailed

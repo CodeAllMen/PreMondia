@@ -30,9 +30,9 @@ func InsertClickData() {
 	maxSQL := "select * from click_data order by datetime desc limit 1"
 	o.Raw(maxSQL).QueryRow(&maxDateClick)
 	hoursTime := util.GetFormatHoursTime()
-	sql := fmt.Sprintf("select left(sendtime,13) as Datetime,aff_name, service_type,pub_id,count(id) as "+
-		"Click_num,click_type from nth_id where left(sendtime,13)>'%s' and left(sendtime,13)<'%s' group by "+
-		"aff_name, pub_id, service_type,left(sendtime,13),click_type order by Datetime", maxDateClick.Datetime, hoursTime)
+	sql := fmt.Sprintf("select left(sendtime,13) as Datetime,aff_name, service_type,pub_id,count(track_id) as "+
+		"Click_num from aff_track where left(sendtime,13)>'%s' and left(sendtime,13)<'%s' group by "+
+		"aff_name, pub_id, service_type,left(sendtime,13) order by Datetime", maxDateClick.Datetime, hoursTime)
 
 	o.Raw(sql).QueryRows(&clickInfo)
 	for _, v := range clickInfo {

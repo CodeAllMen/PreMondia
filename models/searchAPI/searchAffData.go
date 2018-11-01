@@ -69,18 +69,14 @@ func GetAffdDate(startTime, endTime, operator, service_type, aff_name, clickType
 		filter_sql = filter_sql + fmt.Sprintf(" and aff_name = '%s'", aff_name)
 		clickFilter = clickFilter + fmt.Sprintf(" and aff_name = '%s'", aff_name)
 	}
-	if clickType != "All" {
-		filter_sql = filter_sql + fmt.Sprintf(" and click_type = '%s'", clickType)
-		clickFilter = clickFilter + fmt.Sprintf(" and click_type = '%s'", clickType)
-	}
 
 	//  根据网盟及子渠道分组查询SuccessMT  及  FailedMT
 	mtGroupByAffSQL := fmt.Sprintf("select t.aff_name,t.pub_id, count(CASE "+
-		"WHEN notification_type='mt_failed' THEN 1 ELSE NULL END) as MtFailed,"+
-		"count(CASE WHEN notification_type='mt_success' THEN 1 ELSE NULL END) as SuccessMt "+
-		"from (select b.aff_name,b.pub_id,notification_type,left(sendtime,10) from nth_charge a left join nth_mo b on "+
-		" a.subscription_id = b.subscription_id where command = 'recurrentPayment' and sendtime>'%s' and sendtime<'%s' "+
-		" and subtime>'%s' and sendtime<'%s' %s ) as t group by"+
+		"WHEN notification_type='MT_FAILED' THEN 1 ELSE NULL END) as MtFailed,"+
+		"count(CASE WHEN notification_type='MT_SUCCESS' THEN 1 ELSE NULL END) as SuccessMt "+
+		"from (select b.aff_name,b.pub_id,notification_type,left(sendtime,10) from notification a left join mo b on "+
+		" a.subscription_id = b.subscription_id where  sendtime>'%s' and sendtime<'%s' "+
+		" and sub_time>'%s' and sendtime<'%s' %s ) as t group by"+
 		" t.aff_name,t.pub_id", startTime, endTime, startTime, endTime, filter_sql)
 	fmt.Println(mtGroupByAffSQL)
 	//  根据网盟及子渠道分组查询 点击数量  clickNum
@@ -89,8 +85,8 @@ func GetAffdDate(startTime, endTime, operator, service_type, aff_name, clickType
 
 	//  根据网盟及子渠道分组查询订阅数量，退订数量，postback数量
 	moGroupByAffSQL := fmt.Sprintf("Select count(id) as SubNum,sum(postback_status) as PostbackNum, aff_name,"+
-		" pub_id, count(case when unsubtime < '%s' and unsubtime<>'' then 1 else null end)  as UnsubNum "+
-		"from nth_mo a  where  a.subtime>'%s' and a.subtime<'%s' %s group by aff_name,pub_id",
+		" pub_id, count(case when unsub_time < '%s' and unsub_time<>'' then 1 else null end)  as UnsubNum "+
+		"from mo a  where  a.sub_time>'%s' and a.sub_time<'%s' %s group by aff_name,pub_id",
 		endTime, startTime, endTime, filter_sql)
 
 	//  汇总成一条SQL语句

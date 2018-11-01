@@ -31,17 +31,17 @@ func GetSubscribeQualityModels1(startSubDate, endSubDate, startDate, endDate, af
 	// 新构建表结构（链表（tn_mo 和 tn_notification 表，订阅id相同）查询，根据条件查询出网盟、子渠道、订阅类型，订阅id、
 	// 交易状态、服务类型、运营商、postback状态、点击类型和对应的日期
 	firstTable := fmt.Sprintf("SELECT DISTINCT b.aff_name,b.pub_id, notification_type,a.subscription_id,b.service_type,"+
-		"b.operator,postback_status,LEFT(sendtime,10) AS date FROM nth_charge AS a "+
-		"LEFT JOIN nth_mo AS b ON a.subscription_id = b.subscription_id WHERE "+
-		" LEFT(sendtime,10)<='%s' AND left(b.subtime,10)>='%s' "+
-		"AND LEFT(b.subtime,10)<='%s' %s", endDate, startSubDate, endSubDate, fliterSql)
+		"b.operator,postback_status,LEFT(sendtime,10) AS date FROM notification AS a "+
+		"LEFT JOIN mo AS b ON a.subscription_id = b.subscription_id WHERE "+
+		" LEFT(sendtime,10)<='%s' AND left(b.sub_time,10)>='%s' "+
+		"AND LEFT(b.sub_time,10)<='%s' %s", endDate, startSubDate, endSubDate, fliterSql)
 
-	postbackSql := "CASE WHEN notification_type='sub' and postback_status=1 " +
+	postbackSql := "CASE WHEN notification_type='SUB' and postback_status=1 " +
 		"AND (aff_name<>'' OR aff_name<>'test_affName') THEN 1 ELSE null END"
-	successMtSql := "CASE WHEN notification_type='mt_success' THEN 1 ELSE NULL END"
-	subNumSql := "CASE WHEN  notification_type='sub' THEN 1 ELSE null END"
-	unsubNumSql := "CASE WHEN notification_type='unsub' THEN 1 ELSE NULL END"
-	failedMtSql := "CASE WHEN notification_type='mt_failed' THEN 1 ELSE NULL END"
+	successMtSql := "CASE WHEN notification_type='MT_SUCCESS' THEN 1 ELSE NULL END"
+	subNumSql := "CASE WHEN  notification_type='SUB' THEN 1 ELSE null END"
+	unsubNumSql := "CASE WHEN notification_type='UNSUB' THEN 1 ELSE NULL END"
+	failedMtSql := "CASE WHEN notification_type='MT_FAILED' THEN 1 ELSE NULL END"
 
 	newTable := fmt.Sprintf("SELECT service_type,date,aff_name,pub_id,operator, COUNT(%s) AS postback_num,"+
 		"COUNT(%s) AS success_mt,COUNT(%s) AS sub_num, COUNT(%s) AS unsub_num, COUNT(%s) AS failed_mt from (%s) AS t "+

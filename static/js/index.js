@@ -114,7 +114,7 @@ function getMoDateData() {
 
 function getQualitypage() {
 	$.ajax({
-		url: 'http://cpx3.allcpx.com/world_play/quality',
+		url: 'http://cpx3.allcpx.com/quality',
 		type: 'GET',
 		data: QualityDatas,
 		dataType: "json",

@@ -69,24 +69,24 @@ func GetSubscribeQualityModels(sub_time, end_time, opeator, aff_name, service_ty
 
 	searchSql := fmt.Sprintf(`
 			SELECT service_type,date,aff_name,pub_id,operator,
-			COUNT(CASE WHEN notification_type='sub' and postback_status=1 AND (aff_name<>'' OR aff_name<>'test_affName') THEN 1 ELSE null END) AS postback_num,
+			COUNT(CASE WHEN notification_type='SUB' and postback_status=1 AND (aff_name<>'' OR aff_name<>'test_affName') THEN 1 ELSE null END) AS postback_num,
 			COUNT(CASE 
-				WHEN notification_type='mt_success' THEN 1
+				WHEN notification_type='MT_SUCCESS' THEN 1
 				ELSE NULL
 			END) AS success_mt,
-			COUNT(CASE WHEN notification_type='sub' THEN 1 ELSE null END) AS sub_num,
+			COUNT(CASE WHEN notification_type='SUB' THEN 1 ELSE null END) AS sub_num,
 			COUNT(CASE 
-				WHEN notification_type='unsub' THEN 1
+				WHEN notification_type='UNSUB' THEN 1
 				ELSE NULL
 			END) AS unsub_num,
 			COUNT(CASE WHEN
-				notification_type='mt_failed'
+				notification_type='MT_FAILED'
 				THEN 1
 				ELSE NULL
 			END) AS failed_mt 
 			from (select distinct b.aff_name,b.pub_id, notification_type,a.subscription_id,b.service_type, 
-				b.operator,postback_status,left(sendtime,10) as date from nth_charge as a 
-				left join nth_mo as b on a.subscription_id = b.subscription_id where left(sendtime,10)>='%s' and left(sendtime,10)<='%s' and left(b.subtime,10)='%s' %s)  as t group by
+				b.operator,postback_status,left(sendtime,10) as date from notification as a 
+				left join mo as b on a.subscription_id = b.subscription_id where left(sendtime,10)>='%s' and left(sendtime,10)<='%s' and left(b.sub_time,10)='%s' %s)  as t group by
 				date,aff_name,pub_id,operator,service_type order by date
 		`, sub_time, end_time, sub_time, fliterSql)
 	fmt.Println(searchSql)

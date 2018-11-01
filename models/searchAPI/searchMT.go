@@ -38,23 +38,23 @@ func GetAffMTData(serviceType, start, end, operator, pubID, affName, clickType s
 	}
 
 	sql := fmt.Sprintf(`SELECT COUNT(CASE 
-								WHEN notification_type='mt_success' THEN 1
+								WHEN notification_type='MT_SUCCESS' THEN 1
 								ELSE NULL
 							END) AS Success_mt, COUNT(CASE WHEN
-								notification_type='mt_failed'
+								notification_type='MT_FAILED'
 								THEN 1
 								ELSE NULL
 							END) AS Failed_mt
 							, COUNT(CASE 
-								WHEN notification_type='sub' THEN 1
+								WHEN notification_type='SUB' THEN 1
 								ELSE NULL
 							END) AS Total_sub, COUNT(CASE 
-								WHEN notification_type='unsub' THEN 1
+								WHEN notification_type='UNSUB' THEN 1
 								ELSE NULL
 							END) AS Total_unsub
 							, (
 								SELECT SUM(postback_status)
-								FROM nth_mo b
+								FROM mo b
 								WHERE subtime > '%s'
 									AND subtime < '%s'
 									%s
@@ -62,10 +62,9 @@ func GetAffMTData(serviceType, start, end, operator, pubID, affName, clickType s
 					FROM (
 						SELECT DISTINCT notification_type, a.subscription_id
 							, LEFT(sendtime, 10)
-						FROM nth_charge a
-							LEFT JOIN nth_mo b ON a.subscription_id = b.subscription_id
-						WHERE a.command IN ('recurrentPayment', 'deliverSessionState')
-							AND sendtime > '%s'
+						FROM notification a
+							LEFT JOIN mo b ON a.subscription_id = b.subscription_id
+						WHERE  sendtime > '%s'
 							AND sendtime < '%s'
 							%s
 			) t;`, start, end, filterSQL, start, end, filterSQL)
