@@ -37,14 +37,16 @@ func (c *GetCustomerControllers) Get() {
 	errorDesc := c.GetString("errorDesc")
 	errorCode := c.GetString("errorCode")
 
-	isSub, subID := sub.CheckUserSubStatus(customerID)
-	if isSub { // 用户已经订阅
-		// 将customerID注册一次,防止用户未注册，不能使用我们的服务
-		util.HttpRequest(subID, "register", "video", "", "")
-		c.Redirect("http://www.redlightvideos.com/mm/pl?sub="+subID, 302)
-		// 记录网盟重复送量的数据
-		sub.InsertHaveSubData(trackID, customerID)
-		return
+	if customerID != "" {
+		isSub, subID := sub.CheckUserSubStatus(customerID)
+		if isSub { // 用户已经订阅
+			// 将customerID注册一次,防止用户未注册，不能使用我们的服务
+			util.HttpRequest(subID, "register", "video", "", "")
+			c.Redirect("http://www.redlightvideos.com/mm/pl?sub="+subID, 302)
+			// 记录网盟重复送量的数据
+			sub.InsertHaveSubData(trackID, customerID)
+			return
+		}
 	}
 
 	// 获取 tracking 数据
