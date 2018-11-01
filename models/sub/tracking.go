@@ -11,7 +11,7 @@ import (
 func InsertTrack(trackData *models.AffTrack) (int64, error) {
 	o := orm.NewOrm()
 	o.Using("default")
-	_, trackData.Sendtime = util.GetDatetime()
+	trackData.Sendtime, _ = util.GetDatetime()
 
 	idInt, err := o.Insert(trackData)
 	if err != nil {

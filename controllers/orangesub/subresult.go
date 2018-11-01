@@ -12,7 +12,7 @@ type MondiaSubscribeController struct {
 }
 
 func (c *MondiaSubscribeController) Get() {
-	trackID := c.Ctx.Input.Param(":id")
+	trackID := c.Ctx.Input.Param(":trackID")
 	status := c.GetString("status")
 	customerID := c.GetString("customerId")
 	subcriptionID := c.GetString("subId")
