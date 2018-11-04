@@ -10,7 +10,7 @@ type CheckSubNum struct {
 }
 
 func (c *CheckSubNum) Get() {
-	limitSub := sub.CheckTodaySubNum(49)
+	limitSub := sub.CheckTodaySubNum(48)
 	limitSubStr := "NO"
 	if limitSub {
 		limitSubStr = "YES"

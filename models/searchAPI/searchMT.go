@@ -55,8 +55,8 @@ func GetAffMTData(serviceType, start, end, operator, pubID, affName, clickType s
 							, (
 								SELECT SUM(postback_status)
 								FROM mo b
-								WHERE subtime > '%s'
-									AND subtime < '%s'
+								WHERE sub_time > '%s'
+									AND sub_time < '%s'
 									%s
 							) AS Total_postback
 					FROM (

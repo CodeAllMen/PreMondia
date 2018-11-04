@@ -100,15 +100,15 @@ func UpdateOrInsertMo(actionType, subStatus, price string, mo *models.Mo) (notif
 					mo.Price = price
 					mo.SuccessMT++
 					notificationType = "MT_SUCCESS"
-				} else if subStatus == "SUSPENDED" {
-					mo.FailedMT++
-					notificationType = "MT_FAILED"
 				}
 			}
 
 		} else if actionType == "STATUS_CHANGE" {
 			if mo.ID != 0 {
-				//mo.SubscriptionStatus = mo.SubscriptionStatus
+				if subStatus == "SUSPENDED" {
+					mo.FailedMT++
+					notificationType = "MT_FAILED"
+				}
 			}
 		}
 		o.Update(mo)

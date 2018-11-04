@@ -25,6 +25,7 @@ func (c *MondiaNotificationController) Post() {
 	modiaNotification := models.Notification{}
 	err := xml.Unmarshal(data, &modiaNotification)
 	mo := new(models.Mo)
+	notificationType := ""
 	if err == nil { // 更新mo表（新增订阅，退订，续订）
 		mo.Price = modiaNotification.Price
 		mo.Operator = modiaNotification.Operator
@@ -34,8 +35,9 @@ func (c *MondiaNotificationController) Post() {
 		mo.Channel = modiaNotification.Channel
 		mo.PackageCode = modiaNotification.PackageCode
 		mo.ProductCode = modiaNotification.ProductCode
-		notification.UpdateOrInsertMo(modiaNotification.Action, modiaNotification.SubscriptionStatus, modiaNotification.Price, mo)
+		notificationType = notification.UpdateOrInsertMo(modiaNotification.Action, modiaNotification.SubscriptionStatus, modiaNotification.Price, mo)
 	}
+	modiaNotification.NotificationType = notificationType
 	notification.InsertCharge(modiaNotification)
 	c.Ctx.WriteString("ok")
 

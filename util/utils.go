@@ -7,7 +7,7 @@ import (
 
 // GetAffPrice 获取每个转化的价格
 func GetAffPrice(date, affName, clickType string) (price float32) {
-	price = 6.8
+	price = 2.8
 	if affName == "" || affName == "test_affName" {
 		price = 0.0
 	}
