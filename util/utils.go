@@ -16,9 +16,11 @@ func GetAffPrice(date, affName, clickType string) (price float32) {
 
 // GetOperatorPrice 获取运营商分成价格
 func GetOperatorPrice(operator string) (price float32) {
-	priceMap := map[string]float32{"20402": 2.199 * 1.17, "20404": 2.484 * 1.17, "20408": 2.365 * 1.17,
-		"20416": 2.192 * 1.17}
-	return priceMap[operator]
+	// priceMap := map[string]float32{"20402": 2.199 * 1.17, "20404": 2.484 * 1.17, "20408": 2.365 * 1.17,
+	// 	"20416": 2.192 * 1.17}
+	// return priceMap[operator]
+	price = 9.9 * 0.6 * 0.26396
+	return
 }
 
 // Duplicate 列表去重
