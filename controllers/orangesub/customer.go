@@ -39,7 +39,7 @@ func (c *GetCustomerControllers) Get() {
 
 	if customerID != "" {
 		isSub, subID := sub.CheckUserSubStatus(customerID)
-		isSub := false
+		isSub = false
 		if isSub { // 用户已经订阅
 			// 将customerID注册一次,防止用户未注册，不能使用我们的服务
 			util.HttpRequest(subID, "register", "video", "", "")
