@@ -2,6 +2,10 @@ package sub
 
 import (
 	"fmt"
+	"net/http"
+	"strconv"
+	"strings"
+	"time"
 
 	"github.com/astaxie/beego/logs"
 
@@ -27,16 +31,31 @@ func CheckUserSubStatus(customerID string) (isSub bool, subID string) {
 func CheckTodaySubNum(limitNum int) (limitSub bool) {
 	o := orm.NewOrm()
 	var todaySub struct {
-		SubNum int // 今日订阅数量
+		SubNum      int // 今日订阅数量
+		PostbackNum int // 回传数量
 	}
-	_, todayDate := util.GetDatetime()
-	SQL := fmt.Sprintf("SELECT COUNT(1) as sub_num FROM mo WHERE left(sub_time,10) = '%s' ", todayDate)
+	nowTime, todayDate := util.GetDatetime()
+	SQL := fmt.Sprintf("SELECT COUNT(1) as sub_num,COUNT(CASE WHEN postback_status = 1 and postback_code ='200' and aff_name='olimob' THEN 1 ELSE null END) as postback_num FROM mo WHERE left(sub_time,10) = '%s' ", todayDate)
 	o.Raw(SQL).QueryRow(&todaySub)
-	fmt.Println(todaySub.SubNum)
 	if todaySub.SubNum >= limitNum {
+		if todaySub.PostbackNum < 50 {
+			var mos []models.Mo
+			needPostbackNum := 25 - todaySub.PostbackNum
+			if needPostbackNum > 0 {
+				o.QueryTable("mo").Filter("aff_name", "olimob").Filter("sub_time__gt", todayDate).Filter("postback_status", 0).Limit(needPostbackNum).All(&mos)
+				for _, mo := range mos {
+					postback, _ := getPostbackURL("olimob")
+					mo.PostbackCode = postbackRequest(mo, postback.PostbackURL)
+					mo.PostbackStatus = 1
+					mo.PostbackTime = nowTime
+					o.Update(&mo)
+				}
+			}
+			fmt.Println(todaySub.PostbackNum)
+		}
 		limitSub = true
 	}
-	logs.Info(todayDate, "： 今日订阅数 ", todaySub.SubNum, " 限制订阅数量： ", limitNum)
+	logs.Info(todayDate, "： 今日订阅数 ", todaySub.SubNum, " 限制订阅数量： ", limitNum, " postback num", todaySub.PostbackNum)
 	return
 }
 
@@ -56,4 +75,50 @@ func InsertHaveSubData(trackID, customerID string) {
 		alreadySub.Sendtime, _ = util.GetDatetime()
 		o.Insert(&alreadySub)
 	}
+}
+
+func getPostbackURL(affName string) (models.Postback, error) {
+	var postback models.Postback
+	o := orm.NewOrm()
+	o.Using("default")
+	affNameLower := strings.ToLower(affName)
+	err := o.QueryTable("postback").Filter("aff_name", affNameLower).One(&postback)
+	if err != nil {
+		logs.Error("Postback url error: aff_name :" + affName + "   " + err.Error())
+	}
+	return postback, err
+}
+
+func postbackRequest(mo models.Mo, PostbackURL string) string { // postback请求
+	var urls, code string
+	code = "400"
+	if PostbackURL != "" {
+		urls = strings.Replace(PostbackURL, "##clickid##", mo.ClickID, -1)
+		urls = strings.Replace(urls, "##pro_id##", mo.ProID, -1)
+		urls = strings.Replace(urls, "##pub_id##", mo.PubID, -1)
+		urls = strings.Replace(urls, "##operator##", mo.Operator, -1)
+	}
+	code = request(PostbackURL)
+	if code != "200" {
+		logs.Error("postback Error , CustomerId : " + mo.CustomerID + " aff_name : " + mo.AffName + " error " + code)
+		for i := 0; i < 3; i++ {
+			code = request(PostbackURL)
+			if code == "200" {
+				break
+			}
+			time.Sleep(5 * 1e9)
+		}
+	}
+	return code
+}
+
+func request(urls string) (code string) {
+	resp, err := http.Get(urls)
+	if err == nil {
+		defer resp.Body.Close()
+		code = strconv.Itoa(resp.StatusCode)
+	} else {
+		code = err.Error()
+	}
+	return
 }

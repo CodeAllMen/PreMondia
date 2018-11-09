@@ -43,24 +43,30 @@ func UpdateOrInsertMo(actionType, subStatus, price string, mo *models.Mo) (notif
 
 		trackID := GetMdSubscribeTableTrackID(mo.CustomerID)
 
+		if trackID == "" {
+
+		}
+
 		trackData := GetCustomerAffData(trackID) // 获取用户点击信息
 		mo.ServiceType = trackData.ServiceType
 		mo.ClickID = trackData.ClickID
 		mo.ProID = trackData.ProID
 		mo.PubID = trackData.PubID
 		mo.AffName = trackData.AffName
+		mo.AffTrackID = trackID
 
 		// Send 账号
 		var requestData request.MondiaRequestData
 		requestData.Message = "Witamy w RedLightVideos. Adres URL to http://www.redlightvideos.com/mm/pl. Twój numer konta to " + mo.SubscriptionID
 		requestData.RequestType = "SendSMS"
 		requestData.CustomerID = mo.CustomerID
-		// _, body := request.MondiaHTTPRequest(requestData)
-		// if string(body) == "OK" {
-		// 	logs.Info("订阅成功后发送账号成功")
-		// } else {
-		// 	logs.Info("订阅成功后发送账号失败")
-		// }
+
+		_, body := request.MondiaHTTPRequest(requestData)
+		if string(body) == "OK" {
+			logs.Info("订阅成功后发送账号成功")
+		} else {
+			logs.Info("订阅成功后发送账号失败")
+		}
 
 		if subStatus == "ACTIVE" {
 			postback, _ := getPostbackURL(mo.AffName)
@@ -115,93 +121,6 @@ func UpdateOrInsertMo(actionType, subStatus, price string, mo *models.Mo) (notif
 		return
 	}
 }
-
-// func UpdateOrInsertMoTest(actionType, subStatus, price, sendtime string, notifID int64, mo *models.Mo) {
-// 	o := orm.NewOrm()
-// 	// var mo models.Mo
-// 	nowTime, _ := util.GetDatetime()
-
-// 	if actionType == "SUBSCRIBE" {
-// 		var mos models.Mo
-// 		o.QueryTable("mo").Filter("subscription_id", mo.SubscriptionID).One(&mos)
-// 		if mos.ID != 0 {
-// 			return
-// 		}
-// 		var trackData models.AffTrack
-// 		o.QueryTable("aff_track").Filter("customer_id", mo.CustomerID).One(&trackData)
-// 		GetMdSubscribeTableTrackID(mo.CustomerID)
-// 		// intTrackID, _ := strconv.Atoi(trackID)
-
-// 		// trackData := GetCustomerAffData(intTrackID) // 获取用户点击信息
-// 		mo.ServiceType = trackData.ServiceType
-// 		mo.ClickID = trackData.ClickID
-// 		mo.ProID = trackData.ProID
-// 		mo.PubID = trackData.PubID
-// 		mo.AffName = trackData.AffName
-
-// 		// Send 账号
-// 		var requestData request.MondiaRequestData
-// 		requestData.Message = "Witamy w RedLightVideos. Adres URL to http://www.redlightvideos.com/mm/pl. Twój numer konta to " + mo.SubscriptionID
-// 		requestData.RequestType = "SendSMS"
-// 		requestData.CustomerID = mo.CustomerID
-// 		if notifID > 71 {
-// 			_, body := request.MondiaHTTPRequest(requestData)
-// 			if string(body) == "OK" {
-// 				logs.Info("订阅成功后发送账号成功")
-// 			} else {
-// 				logs.Info("订阅成功后发送账号失败")
-// 			}
-// 		}
-
-// 		if subStatus == "ACTIVE" {
-// 			postback, _ := getPostbackURL(mo.AffName)
-// 			rate := postback.PostbackRate
-// 			rate = 30
-// 			IfIsPostback := postbackRate(mo, rate) //扣量比例  70表示扣百分之三十的量  YES 表示确定不扣量  NO表示扣量
-// 			if IfIsPostback == "YES" && notifID > 95 {
-// 				mo.PostbackStatus = 1
-// 				mo.PostbackCode = postbackRequest(mo, postback.PostbackURL)
-// 				mo.PostbackTime = nowTime
-// 			}
-// 			mo.SubTime = sendtime
-// 			mo.SubStatus = 1
-// 			o.Insert(mo)
-// 		} else if subStatus == "SUSPENDED" {
-// 			mo.SubTime = sendtime
-// 			mo.SubStatus = 1
-// 			o.Insert(mo)
-// 		}
-// 		return
-// 	} else {
-// 		o.QueryTable("mo").Filter("subscription_id", mo.SubscriptionID).Filter("sub_status", 1).One(mo)
-// 		if actionType == "UNSUBSCRIBE" {
-// 			if mo.ID != 0 {
-// 				mo.SubStatus = 0
-// 				mo.UnsubTime = nowTime
-// 				// if mo.Msisdn != "" {
-// 				// 	util.HttpRequest(mo.Msisdn, "register", "video", mo.CustomerId, "")
-// 				// } else {
-// 				// 	util.HttpRequest(mo.SubscriptionId, "register", "video", mo.CustomerId, "")
-// 				// }
-// 			}
-// 		} else if actionType == "RENEW" || actionType == "RETRY" {
-// 			if mo.ID != 0 {
-// 				if subStatus == "ACTIVE" {
-// 					mo.Price = price
-// 					mo.SuccessMT++
-// 				} else if subStatus == "SUSPENDED" {
-// 					mo.FailedMT++
-// 				}
-// 			}
-// 		} else if actionType == "STATUS_CHANGE" {
-// 			if mo.ID != 0 {
-// 				//mo.SubscriptionStatus = mo.SubscriptionStatus
-// 			}
-// 		}
-// 		o.Update(mo)
-// 		return
-// 	}
-// }
 
 func GetMdSubscribeTableTrackID(customerID string) (trackID string) {
 	o := orm.NewOrm()
