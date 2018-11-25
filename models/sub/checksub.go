@@ -38,25 +38,37 @@ func CheckTodaySubNum(limitNum int) (limitSub bool) {
 	SQL := fmt.Sprintf("SELECT COUNT(1) as sub_num,COUNT(CASE WHEN postback_status = 1 and postback_code ='200' and aff_name='olimob' THEN 1 ELSE null END) as postback_num FROM mo WHERE left(sub_time,10) = '%s' ", todayDate)
 	o.Raw(SQL).QueryRow(&todaySub)
 	if todaySub.SubNum >= limitNum {
-		if todaySub.PostbackNum < 50 {
-			var mos []models.Mo
-			needPostbackNum := 25 - todaySub.PostbackNum
-			if needPostbackNum > 0 {
-				o.QueryTable("mo").Filter("aff_name", "olimob").Filter("sub_time__gt", todayDate).Filter("postback_status", 0).Limit(needPostbackNum).All(&mos)
-				for _, mo := range mos {
-					postback, _ := getPostbackURL("olimob")
-					mo.PostbackCode = postbackRequest(mo, postback.PostbackURL)
-					mo.PostbackStatus = 1
-					mo.PostbackTime = nowTime
-					o.Update(&mo)
-				}
-			}
-			fmt.Println(todaySub.PostbackNum)
-		}
+		// if todaySub.PostbackNum < 50 {
+		// 	var mos []models.Mo
+		// 	needPostbackNum := 25 - todaySub.PostbackNum
+		// 	if needPostbackNum > 0 {
+		// 		o.QueryTable("mo").Filter("aff_name", "olimob").Filter("sub_time__gt", todayDate).Filter("postback_status", 0).Limit(needPostbackNum).All(&mos)
+		// 		for _, mo := range mos {
+		// 			postback, _ := getPostbackURL("olimob")
+		// 			mo.PostbackCode = postbackRequest(mo, postback.PostbackURL)
+		// 			mo.PostbackStatus = 1
+		// 			mo.PostbackTime = nowTime
+		// 			o.Update(&mo)
+		// 		}
+		// 	}
+		// 	fmt.Println(todaySub.PostbackNum)
+		// }
 		limitSub = true
 	}
-	logs.Info(todayDate, "： 今日订阅数 ", todaySub.SubNum, " 限制订阅数量： ", limitNum, " postback num", todaySub.PostbackNum)
+	logs.Info(nowTime, "： 今日订阅数 ", todaySub.SubNum, " 限制订阅数量： ", limitNum, " postback num", todaySub.PostbackNum)
 	return
+}
+
+func LimitTenMinutesSubNum(limitSubNum int) (isLimit bool) {
+	o := orm.NewOrm()
+	nowTime, _ := util.GetDatetime()
+	nowMinutes := nowTime[0:15]
+	subNum, _ := o.QueryTable("mo").Filter("sub_time__gt", nowMinutes).Count()
+	if int(subNum) > limitSubNum {
+		logs.Info(nowMinutes, "   十分钟的订阅已经满3个，十分钟之内最多3个订阅")
+		return true
+	}
+	return false
 }
 
 // InsertHaveSubData 插入已经订阅的用户数据

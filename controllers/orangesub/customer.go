@@ -70,7 +70,17 @@ func (c *GetCustomerControllers) Get() {
 	if isLimitSub {
 		logs.Info("订阅数量超过 ", 48, " 页面跳转到谷歌")
 		subURL = "http://www.google.com"
+		c.Redirect(subURL, 302)
+		return
 	}
+	check10MinutesSubNum := sub.LimitTenMinutesSubNum(3) //10分钟最多三个订阅
+	if check10MinutesSubNum {
+		subURL = "http://www.google.com"
+		c.Redirect(subURL, 302)
+		return
+	}
+	printRedirectAocLog(trackData.AffName, trackData.PubID, trackData.ClickID)
+	logs.Info("跳转到aoc")
 	c.Redirect(subURL, 302)
 }
 
@@ -82,4 +92,9 @@ func redirectSubURL(trackID string) string {
 		orangeConf.ProductCode + "&subPackage=" + orangeConf.SubPackage + "&operatorId=8&&langCode=pl"
 	fmt.Println(url)
 	return url
+}
+
+func printRedirectAocLog(affName, pubID, clickID string) {
+	_, nowDate := util.GetDatetime()
+	logs.Info(nowDate, " 跳转到aoc页面，affName: ", affName, " PubID: ", pubID, " click_id: ", clickID)
 }
