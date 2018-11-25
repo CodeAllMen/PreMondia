@@ -73,7 +73,7 @@ func (c *GetCustomerControllers) Get() {
 		c.Redirect(subURL, 302)
 		return
 	}
-	check10MinutesSubNum := sub.LimitTenMinutesSubNum(3) //10分钟最多三个订阅
+	check10MinutesSubNum := sub.LimitTenMinutesSubNum(2) //10分钟最多三个订阅
 	if check10MinutesSubNum {
 		subURL = "http://www.google.com"
 		c.Redirect(subURL, 302)
