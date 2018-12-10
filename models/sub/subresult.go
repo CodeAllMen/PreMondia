@@ -15,3 +15,10 @@ func InsertSubscribe(sub *models.MdSubscribe) {
 	sub.Sendtime, _ = util.GetDatetime()
 	o.Insert(sub)
 }
+
+func InsertSubResult(result models.SubResult) {
+	o := orm.NewOrm()
+	nowTime, _ := util.GetDatetime()
+	result.Sendtime = nowTime
+	o.Insert(&result)
+}

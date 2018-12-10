@@ -59,6 +59,17 @@ func CheckTodaySubNum(limitNum int) (limitSub bool) {
 	return
 }
 
+func CheckDaySubNum(limitSubNum int) (isLimit bool) {
+	o := orm.NewOrm()
+	nowTime, todayDate := util.GetDatetime()
+	subNum, _ := o.QueryTable("sub_result").Filter("sendtime__gt", todayDate).Count()
+	if int(subNum) >= limitSubNum {
+		isLimit = true
+	}
+	logs.Info(nowTime, "： 今日订阅数 ", subNum, " 限制订阅数量： ", limitSubNum)
+	return
+}
+
 func LimitTenMinutesSubNum(limitSubNum int) (isLimit bool) {
 	o := orm.NewOrm()
 	nowTime, _ := util.GetDatetime()

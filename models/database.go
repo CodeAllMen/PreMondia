@@ -261,7 +261,19 @@ type ClickData struct {
 	ClickNum    int    `orm:"size(255)"`
 }
 
+// SubResult 用户订阅之后的结果通知
+type SubResult struct {
+	// ID         int `orm:"pk;auto;column(id)"`
+	SubsID     string `orm:"pk;column(sub_id)"`
+	Status     string
+	Msisdn     string
+	OperatorID string `orm:"column(operator_id)"`
+	Sendtime   string
+	ProductID  string `orm:"column(product_id)"`
+	TrackID    string `orm:"track_id"`
+}
+
 func init() {
 	orm.RegisterModel(new(AffTrack), new(Notification), new(Postback), new(Mo),
-		new(BillingHistory), new(ClickData), new(EveryDaySubDatas), new(MdSubscribe), new(UnsubPin), new(MondiaCharge), new(AlreadySub))
+		new(BillingHistory), new(ClickData), new(EveryDaySubDatas), new(MdSubscribe), new(UnsubPin), new(MondiaCharge), new(AlreadySub), new(SubResult))
 }

@@ -46,4 +46,14 @@ func (c *MondiaSubscribeController) Get() {
 	} else {
 		c.Redirect("http://www.redlightvideos.com/lp/mm/pl/index.html?affName=Slef", 302)
 	}
+
+	if status == "SUCCESS" || status == "SUSPENDED" {
+		var subResult models.SubResult
+		subResult.Status = subStatus
+		subResult.Msisdn = customerID
+		// subResult.OperatorID = c.GetString("operator_id")
+		subResult.SubsID = subcriptionID
+		subResult.TrackID = trackID
+		sub.InsertSubResult(subResult)
+	}
 }
