@@ -38,22 +38,9 @@ func CheckTodaySubNum(limitNum int) (limitSub bool) {
 	SQL := fmt.Sprintf("SELECT COUNT(1) as sub_num,COUNT(CASE WHEN postback_status = 1 and postback_code ='200' and aff_name='olimob' THEN 1 ELSE null END) as postback_num FROM mo WHERE left(sub_time,10) = '%s' ", todayDate)
 	o.Raw(SQL).QueryRow(&todaySub)
 	if todaySub.SubNum >= limitNum {
-		// if todaySub.PostbackNum < 50 {
-		// 	var mos []models.Mo
-		// 	needPostbackNum := 25 - todaySub.PostbackNum
-		// 	if needPostbackNum > 0 {
-		// 		o.QueryTable("mo").Filter("aff_name", "olimob").Filter("sub_time__gt", todayDate).Filter("postback_status", 0).Limit(needPostbackNum).All(&mos)
-		// 		for _, mo := range mos {
-		// 			postback, _ := getPostbackURL("olimob")
-		// 			mo.PostbackCode = postbackRequest(mo, postback.PostbackURL)
-		// 			mo.PostbackStatus = 1
-		// 			mo.PostbackTime = nowTime
-		// 			o.Update(&mo)
-		// 		}
-		// 	}
-		// 	fmt.Println(todaySub.PostbackNum)
-		// }
 		limitSub = true
+	} else {
+		limitSub = CheckDaySubNum(limitNum)
 	}
 	logs.Info(nowTime, "： 今日订阅数 ", todaySub.SubNum, " 限制订阅数量： ", limitNum, " postback num", todaySub.PostbackNum)
 	return

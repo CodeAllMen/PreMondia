@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/MobileCPX/PreMondia/controllers/searchAPI"
 	_ "github.com/MobileCPX/PreMondia/initial"
+	"github.com/MobileCPX/PreMondia/models/sub"
 	_ "github.com/MobileCPX/PreMondia/routers"
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/logs"
@@ -15,7 +16,7 @@ func main() {
 	logs.SetLogger(logs.AdapterFile, `{"filename":"/mondia/logs/mondia.log","level":6,"maxlines":100000000,"daily":true,"maxdays":10000}`)
 	logs.Async(1e3)
 	logs.EnableFuncCallDepth(true)
-
+	sub.CheckDaySubNum(30)
 	// postbackutil.PostbackRequest()
 	beego.InsertFilter("*", beego.BeforeRouter, cors.Allow(&cors.Options{
 		AllowAllOrigins: true,
