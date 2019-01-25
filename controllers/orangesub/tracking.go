@@ -29,8 +29,6 @@ func (c *LPTrackClickControllers) Get() {
 	affTrack.UserAgent = c.Ctx.Input.UserAgent()   //用户设备信息
 
 	id, err := sub.InsertTrack(affTrack)
-	c.Ctx.WriteString("false")
-	return
 	if err == nil {
 		c.Ctx.WriteString(strconv.FormatInt(id, 10))
 	} else {
