@@ -33,8 +33,8 @@
         <div class="content" style="margin-top: 34%">
             <p class="success">Zawieść</p>
             <p class="last">Numer telefonu komórkowego lub PIN jest nieprawidłowy</p>
-            <a id="retry" type="button" class="unsub retry" onClick="location.href='/unsub'">Retry</a>
-            <a id="go_home" type="button" class="unsub back" onClick="location.href='http://www.redlightvideos.com/lp/mm/pl/index.html'">Go to HOME </a>
+            <a id="retry" type="button" class="unsub retry" onClick="location.href='/unsub?service_id={{.service_id}}'">Retry</a>
+            <a id="go_home" type="button" class="unsub back" onClick="location.href='{{.contentURL}}'">Go to HOME </a>
         </div>
     </div>
 </body>

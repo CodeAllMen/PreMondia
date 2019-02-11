@@ -3,6 +3,7 @@ package initial
 import (
 	"fmt"
 
+	_ "github.com/MobileCPX/PreMondia/models/mondia"
 	_ "github.com/MobileCPX/PreMondia/models"
 
 	"github.com/astaxie/beego"

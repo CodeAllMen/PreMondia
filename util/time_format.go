@@ -2,6 +2,15 @@ package util
 
 import "time"
 
+// GetNowTimeFormat 获取当前时间格式
+func GetNowTimeFormat() (nowDatetime, nowDate string) {
+	time.LoadLocation("UTC")
+	//h, _ := time.ParseDuration("1h")
+	nowDatetime = time.Now().UTC().Format("2006-01-02 15:04:05")
+	nowDate = time.Now().UTC().Format("2006-01-02")
+	return
+}
+
 // GetFormatTime 获取当前格式化时间
 // nowDatetime 当前详细时间  nowDate当前日期
 func GetFormatTime() (nowDatetime, nowDate string) {

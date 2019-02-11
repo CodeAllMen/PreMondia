@@ -23,7 +23,8 @@
             <form action="/getCust" id="form" method="Post">
                 <p class="m-b">MSISDN:{{.phone}}</p>
                 <input class="fill_num m-b" id="pin" name="pin" placeholder="PIN : XXX" />
-                <input class="noexit" id="id" name="id" value="{{.id}}"/>
+                <input class="noexit" id="id" name="id" value="{{.id}}" style="display: none"/>
+                <input class="noexit" id="service_id" name="service_id" value="{{.service_id}}" style="display: none"/>
                 <p class="ver">Wprowadź kod PIN otrzymany w SMS-ie</p>
                 <a type="button" class="unsub" id="ver">zweryfikować</a>
             </form>

@@ -273,7 +273,14 @@ type SubResult struct {
 	TrackID    string `orm:"track_id"`
 }
 
+//func init() {
+//	orm.RegisterModel(new(AffTrack), new(Notification), new(Postback), new(Mo),
+//		new(BillingHistory), new(ClickData), new(EveryDaySubDatas), new(MdSubscribe), new(UnsubPin), new(MondiaCharge), new(AlreadySub), new(SubResult))
+//
+//}
+
 func init() {
-	orm.RegisterModel(new(AffTrack), new(Notification), new(Postback), new(Mo),
-		new(BillingHistory), new(ClickData), new(EveryDaySubDatas), new(MdSubscribe), new(UnsubPin), new(MondiaCharge), new(AlreadySub), new(SubResult))
+	orm.RegisterModel(new(ClickData), new(EveryDaySubDatas), new(MondiaCharge), new(SubResult))
+
 }
+

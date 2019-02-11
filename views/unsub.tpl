@@ -22,6 +22,7 @@
             <form action="unsubPin" id="form" method="Post">
                 <p class="m-b">Proszę podać swój numer telefonu: </p>
                 <input class="fill_num m-b" name="msisdn" id="msisdn" placeholder="48xxxxxxxxx" />
+                 <input class="noexit" id="service_id" name="service_id" value="{{.service_id}}" style="display: none;"/>
                 <p class="ver">Kod weryfikacyjny zostanie wysłany do tego msisdn.</p>
                 <a type="button" class="unsub" id="unsub">Prześlij</a>
                 <p class="last">*Proszę podać swój numer z kodem kraju (np. 48 w PL)</p>

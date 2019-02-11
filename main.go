@@ -3,7 +3,7 @@ package main
 import (
 	"github.com/MobileCPX/PreMondia/controllers/searchAPI"
 	_ "github.com/MobileCPX/PreMondia/initial"
-	"github.com/MobileCPX/PreMondia/models/sub"
+	"github.com/MobileCPX/PreMondia/models/mondia"
 	_ "github.com/MobileCPX/PreMondia/routers"
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/logs"
@@ -11,20 +11,32 @@ import (
 	"github.com/robfig/cron"
 )
 
+func init() {
+	mondia.InitServiceConfig()
+}
+
+/*
+现在是测试环境，上线后需要替换MO表中的service_ID
+ */
+
+
 func main() {
 
 	logs.SetLogger(logs.AdapterFile, `{"filename":"/mondia/logs/mondia.log","level":6,"maxlines":100000000,"daily":true,"maxdays":10000}`)
 	logs.Async(1e3)
 	logs.EnableFuncCallDepth(true)
-	sub.CheckDaySubNum(30)
+	//sub.CheckDaySubNum(30)
 	// postbackutil.PostbackRequest()
+
+	mondia.ServiceRegisterRequest("12412", "124124",
+		"GOGAMEHUB", "register")
+
 	beego.InsertFilter("*", beego.BeforeRouter, cors.Allow(&cors.Options{
 		AllowAllOrigins: true,
 		AllowMethods:    []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
 		AllowHeaders:    []string{"Origin", "Authorization", "Access-Control-Allow-Origin", "Content-Type"},
 		ExposeHeaders:   []string{"Content-Length", "Access-Control-Allow-Origin"},
 	}))
-
 	task()
 	searchAPI.AffClickData()
 	beego.Run()
