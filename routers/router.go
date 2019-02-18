@@ -2,7 +2,6 @@ package routers
 
 import (
 	"github.com/MobileCPX/PreMondia/controllers"
-	"github.com/MobileCPX/PreMondia/controllers/checksubnum"
 	"github.com/MobileCPX/PreMondia/controllers/mondia"
 	"github.com/MobileCPX/PreMondia/controllers/searchAPI"
 	"github.com/astaxie/beego"
@@ -38,7 +37,7 @@ func init() {
 
 	beego.Router("/", &controllers.MainController{})
 	// CheckSubNum 检查订阅数量
-	beego.Router("/check/sub/num", &checksubnum.CheckSubNum{})
+	beego.Router("/check/sub/num", &mondia.SubFlowController{}, "Get:CheckTodaySubNum")
 
 	// 跳转到AOC页面 POST
 	beego.Router("/payment", &mondia.SubFlowController{}, "Post:GetCustomerRedirect")

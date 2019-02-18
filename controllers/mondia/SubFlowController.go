@@ -1,7 +1,6 @@
 package mondia
 
 import (
-	"encoding/json"
 	"fmt"
 	"github.com/MobileCPX/PreMondia/enums"
 	"github.com/MobileCPX/PreMondia/models/mondia"
@@ -38,6 +37,7 @@ func (c *SubFlowController) AffTrack() {
 	} else {
 		c.Ctx.WriteString(strconv.FormatInt(trackID, 10))
 	}
+	c.redirect("http://google.com")
 }
 
 func (c *SubFlowController) GetCustomerRedirect() {
@@ -59,14 +59,8 @@ func (c *SubFlowController) GetCustomerRedirect() {
 
 func (c *SubFlowController) CustomerResultAndStartSub() {
 	track := new(mondia.AffTrack)
+	logs.Info("CustomerResultAndStartSub: ", c.Ctx.Input.URI())
 	trackID := c.Ctx.Input.Param(":trackID") // id
-	track.Status = c.GetString("status")
-	track.CustomerID = c.GetString("customerId")
-	track.Operator = c.GetString("operator")
-	track.ErrorDesc = c.GetString("errorDesc")
-	track.ErrorCode = c.GetString("errorCode")
-	data,_ := json.Marshal(track)
-	fmt.Println(string(data))
 	trackIDInt, err := strconv.Atoi(trackID)
 	if err != nil {
 		logs.Info("trackID string to int failed ,redirect google page")
@@ -79,18 +73,25 @@ func (c *SubFlowController) CustomerResultAndStartSub() {
 		c.redirect("http://www.google.com")
 	}
 
+	track.Status = c.GetString("status")
+	track.CustomerID = c.GetString("customerId")
+	track.Operator = c.GetString("operator")
+	track.ErrorDesc = c.GetString("errorDesc")
+	track.ErrorCode = c.GetString("errorCode")
+
 	mo := new(mondia.Mo)
-	//if track.CustomerID != "" {
-	//	err := mo.GetMoByCustomerID(track.CustomerID)
-	//	// 检查用户是否已经订阅  如果mo ID 不为0表示已经订阅过
-	//	if err != nil && mo.ID != 0 {
-	//		contentURL := mondia.ServiceRegisterRequest(mo.SubscriptionID, mo.CustomerID, track.ServiceID, "register")
-	//		// 记录网盟重复送量的数据
-	//		mondia.InsertAlreadSubData(track)
-	//		// 跳转到内容站
-	//		c.redirect(contentURL)
-	//	}
-	//}
+	if track.CustomerID != "" {
+		err := mo.GetMoByCustomerID(track.CustomerID)
+		// 检查用户是否已经订阅  如果mo ID 不为0表示已经订阅过
+		if err == nil && mo.ID != 0 && track.CustomerID != "177090195" {
+			logs.Info("CustomerID: ", track.CustomerID, "已经订阅过，直接跳转到内容站")
+			contentURL := mondia.ServiceRegisterRequest(mo.SubscriptionID, mo.CustomerID, track.ServiceID, "register")
+			// 记录网盟重复送量的数据
+			mondia.InsertAlreadSubData(track)
+			// 跳转到内容站
+			c.redirect(contentURL)
+		}
+	}
 
 	err = track.Update()
 	if err != nil {
@@ -164,9 +165,33 @@ func (c *SubFlowController) SubResult() {
 		} else {
 			c.redirect("https://www.google.com")
 		}
-
 	}
+}
 
+type JsonResp struct {
+	IsLimitSub bool   `json:"status"`
+	IsRedirect bool   `json:"is_redirect"`
+	LpURL      string `json:"lp_url"`
+}
+
+func (c *SubFlowController) CheckTodaySubNum() {
+	serviceID := c.GetString("service_id")
+	resp := new(JsonResp)
+
+	todaySubNum, err1 := mondia.GetTodayMoNum(serviceID)
+	limitSub := mondia.GetDifferentServiceDayLimitSub(serviceID)
+	if err1 == nil && int(todaySubNum) >= limitSub {
+		resp.IsLimitSub = true
+		reserveLPURL := mondia.RedirectOtherServiceLP(serviceID)
+		if reserveLPURL != "" {
+			resp.IsRedirect = true
+			resp.LpURL = reserveLPURL
+		}
+	}
+	fmt.Println(resp)
+	c.Data["JSON"] = resp
+	c.ServeJSON()
+	//c.Ctx.WriteString(string(limitSubStr))
 }
 
 func printRedirectAocLog(track *mondia.AffTrack) {

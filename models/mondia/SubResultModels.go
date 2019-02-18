@@ -22,8 +22,6 @@ type MdSubscribe struct {
 	ViewName       string
 }
 
-
-
 func (subResult *MdSubscribe) Insert() {
 	o := orm.NewOrm()
 	nowTime, _ := util.GetNowTimeFormat()
@@ -31,5 +29,13 @@ func (subResult *MdSubscribe) Insert() {
 	_, err := o.Insert(subResult)
 	if err != nil {
 		logs.Error("MdSubscribe Insert  存入订阅结果通知失败，ERROR: ", err.Error())
+	}
+}
+
+func (subResult *MdSubscribe) GetSubResultBySubID(subID string) {
+	o := orm.NewOrm()
+	err := o.QueryTable("md_subscribe").Filter("subscription_id", subID).One(subResult)
+	if err != nil {
+		logs.Error("GetSubResultBySubID SubID: ", subID, " ERROR: ", err.Error())
 	}
 }

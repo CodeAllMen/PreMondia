@@ -5,6 +5,7 @@ import (
 	"github.com/MobileCPX/PreMondia/models/mondia"
 	"github.com/astaxie/beego/logs"
 	"io/ioutil"
+	"strconv"
 )
 
 type NotificationController struct {
@@ -23,7 +24,16 @@ func (c *NotificationController) Post() {
 	if err == nil { // 更新mo表（新增订阅，退订，续订）
 		if modiaNotification.Action == "SUBSCRIBE" {
 			track := new(mondia.AffTrack)
-			_ = track.GetAffTrackByCustomerID(modiaNotification.CustomerID)
+			//_ = track.GetAffTrackByCustomerID(modiaNotification.CustomerID)
+			subResult := new(mondia.MdSubscribe)
+			subResult.GetSubResultBySubID(modiaNotification.SubscriptionID)
+			if subResult.TrackID != "" {
+				trackIDInt, err := strconv.Atoi(subResult.TrackID)
+				if err == nil {
+					_ = track.GetAffTrackByTrackID(int64(trackIDInt))
+				}
+			}
+
 			notificationType = c.NewInsertMo(modiaNotification, track)
 		} else if modiaNotification.Action == "UNSUBSCRIBE" {
 			notificationType, _ = mo.UnsubUpdateMo(modiaNotification.SubscriptionID)

@@ -10,7 +10,8 @@ type CheckSubNum struct {
 }
 
 func (c *CheckSubNum) Get() {
-	limitSub := sub.CheckTodaySubNum(48)
+	serviceID := c.GetString("service_id")
+	limitSub := sub.CheckTodaySubNum(serviceID, 48)
 	limitSubStr := "NO"
 	if limitSub {
 		limitSubStr = "YES"

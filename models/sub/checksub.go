@@ -28,14 +28,15 @@ func CheckUserSubStatus(customerID string) (isSub bool, subID string) {
 }
 
 // CheckTodaySubNum 检查今日订阅数量
-func CheckTodaySubNum(limitNum int) (limitSub bool) {
+func CheckTodaySubNum(serviceID string, limitNum int) (limitSub bool) {
 	o := orm.NewOrm()
 	var todaySub struct {
 		SubNum      int // 今日订阅数量
 		PostbackNum int // 回传数量
 	}
 	nowTime, todayDate := util.GetDatetime()
-	SQL := fmt.Sprintf("SELECT COUNT(1) as sub_num,COUNT(CASE WHEN postback_status = 1 and postback_code ='200' and aff_name='olimob' THEN 1 ELSE null END) as postback_num FROM mo WHERE left(sub_time,10) = '%s' ", todayDate)
+	SQL := fmt.Sprintf("SELECT COUNT(1) as sub_num,COUNT(CASE WHEN postback_status = 1 and postback_code ='200'"+
+		" THEN 1 ELSE null END) as postback_num FROM mo WHERE service_id='%s' and left(sub_time,10) = '%s' ", serviceID, todayDate)
 	o.Raw(SQL).QueryRow(&todaySub)
 	if todaySub.SubNum >= limitNum {
 		limitSub = true

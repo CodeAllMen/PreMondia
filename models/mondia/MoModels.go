@@ -68,21 +68,24 @@ func (mo *Mo) InitNewSubMO(response *Notification, affTrack *AffTrack) *Mo {
 	mo.ClickID = affTrack.ClickID
 	mo.ProID = affTrack.ProID
 	mo.PubID = affTrack.PubID
-	mo.ServiceID = affTrack.ServiceID
 	mo.IP = affTrack.IP
 	mo.UserAgent = affTrack.UserAgent
 
 	// Notification init
+	mo.ServiceID = response.ProductCode
 	mo.CustomerID = response.CustomerID
 	mo.SubscriptionID = response.SubscriptionID
 	mo.Operator = response.Operator
-
+	mo.ProductCode = response.ProductCode
 	return mo
 }
 
 func (mo *Mo) GetMoByCustomerID(customerID string) error {
 	o := orm.NewOrm()
 	err := o.QueryTable(MoTBName()).Filter("customer_id", customerID).One(mo)
+	if err != nil{
+		//logs.Error("GetMoByCustomerID ERROR: ",)
+	}
 	return err
 }
 func (mo *Mo) UnsubGetMoByCustomerID(customerID, serviceID string) {
@@ -173,7 +176,7 @@ func (mo *Mo) SuccessMTUpdateMO(subscriptionID string) (notificationType string,
 		mo.ModifyDate = nowDate
 		mo.SuccessMT++
 		_ = mo.UpdateMO()
-		notificationType = "SUCCESS_MT"
+		notificationType = "MT_SUCCESS"
 	}
 	return
 }
@@ -211,7 +214,7 @@ func (mo *Mo) FailedMTUpdateMo(subscriptionID string) (notificationType string, 
 		mo.ModifyDate = nowDate
 		mo.FailedMT++
 		_ = mo.UpdateMO()
-		notificationType = "FAILED_MT"
+		notificationType = "MT_FAILED"
 	}
 	return
 
@@ -289,8 +292,8 @@ func GetTodayMoNum(serviceID string) (int64, error) {
 	_, nowDate := util.GetFormatTime()
 	subNum, err := o.QueryTable(MoTBName()).Filter("subtime__gt", nowDate).Filter("service_id", serviceID).Count()
 	if err != nil {
-		logs.Error("GetTodaySubNum 获取今日的订阅数量失败 ERROR: ", err.Error())
+		logs.Error("GetTodaySubNum serviceID ", serviceID, "获取今日的订阅数量失败 ERROR: ", err.Error())
 	}
-	logs.Info("GetTodaySubNum 今日的订阅数量: ", subNum)
+	logs.Info("GetTodaySubNum  serviceID ", serviceID, " 今日的订阅数量: ", subNum)
 	return subNum, err
 }

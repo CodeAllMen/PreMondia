@@ -17,20 +17,22 @@ type Config struct {
 }
 
 type ServiceInfo struct {
-	ServiceID   string `yaml:"service_id" orm:"pk;column(service_id)"`
-	ServiceName string `yaml:"service_name"`
-	ProductCode string `yaml:"product_code"`
-	RequestURL  string `yaml:"request_url" orm:"column(request_url)"`
-	MrchantID   string `yaml:"mrchant_id" orm:"column(mrchant_id)"`
-	ProdPrice   string `yaml:"prod_price"`
-	ImgPath     string `yaml:"img_path"`
-	OperatorID  string `yaml:"operator_id"`
-	SubPackage  string `yaml:"sub_package"`
-	LpURL       string `yaml:"LP_url" orm:"column(lp_url)"`
-	DeleteURL   string `yaml:"delete_url" orm:"column(delete_url)"`
-	ContentURL  string `yaml:"content_url" orm:"column(content_url)"`
-	UnsubURL    string `yaml:"unsub_url" orm:"column(unsub_url)"`
-	RegisterURL string `yaml:"register_url" orm:"column(register_url)"`
+	ServiceID        string `yaml:"service_id" orm:"pk;column(service_id)"`
+	ServiceName      string `yaml:"service_name"`
+	ProductCode      string `yaml:"product_code"`
+	DayLimitSub      int    `yaml:"day_limit_sub"`
+	RequestURL       string `yaml:"request_url" orm:"column(request_url)"`
+	MrchantID        string `yaml:"mrchant_id" orm:"column(mrchant_id)"`
+	ProdPrice        string `yaml:"prod_price"`
+	ImgPath          string `yaml:"img_path"`
+	OperatorID       string `yaml:"operator_id"`
+	SubPackage       string `yaml:"sub_package"`
+	LpURL            string `yaml:"LP_url" orm:"column(lp_url)"`
+	DeleteURL        string `yaml:"delete_url" orm:"column(delete_url)"`
+	ContentURL       string `yaml:"content_url" orm:"column(content_url)"`
+	UnsubURL         string `yaml:"unsub_url" orm:"column(unsub_url)"`
+	RegisterURL      string `yaml:"register_url" orm:"column(register_url)"`
+	ReserveServiceLP string `yaml:"reserve_service_lp" orm:"column(reserve_service_lp)"`
 }
 
 var ServiceData = make(map[string]ServiceInfo)
@@ -145,5 +147,12 @@ func GetPINUnsubMessage(serviceID, PIN string) (message string) {
 
 	message = fmt.Sprintf("[%s] Kod PIN, który anulowałeś swoją subskrypcję, to "+PIN, service.ServiceID)
 	return
+}
 
+func GetDifferentServiceDayLimitSub(serviceID string) int {
+	return ServiceData[serviceID].DayLimitSub
+}
+
+func RedirectOtherServiceLP(serviceID string) string {
+	return ServiceData[serviceID].ReserveServiceLP
 }
