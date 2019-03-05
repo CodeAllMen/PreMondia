@@ -44,7 +44,7 @@ func (mondiaRequest *MondiaRequestData) Request() (status string, body []byte) {
 		return
 	}
 	//Add 头协议
-	req.Header.Add("Username", "opcpx")
+	req.Header.Add("Username", "Hkleader")
 	req.Header.Add("Password", "cpx22334")
 	response, err := client.Do(req) //提交
 	if err != nil {
@@ -69,9 +69,9 @@ func (mondiaRequest *MondiaRequestData) GetMondiaHTTPRequst() string {
 		requestURL = "http://payment.mondiamediamena.com/billing-gw/subservice/unsubscribe?subid=" + mondiaRequest.SubscriptionID + "&operatorId=8"
 	case "SendSMS":
 		if mondiaRequest.CustomerID != "" {
-			requestURL = "http://payment.mondiamediamena.com/billing-gw/subservice/sendsms?customerId=" + mondiaRequest.CustomerID + "&message=" + url.QueryEscape(mondiaRequest.Message) + "&lang=pl&operatorId=8"
+			requestURL = "http://payment.mondiamediamena.com/billing-gw/subservice/sendsms?customerId=" + mondiaRequest.CustomerID + "&message=" + url.QueryEscape(mondiaRequest.Message) + "&lang=EG&operatorId=8"
 		} else {
-			requestURL = "http://payment.mondiamediamena.com/billing-gw/subservice/sendsms?msisdn=" + mondiaRequest.Msisdn + "&message=" + url.QueryEscape(mondiaRequest.Message) + "&lang=pl&operatorId=8"
+			requestURL = "http://payment.mondiamediamena.com/billing-gw/subservice/sendsms?msisdn=" + mondiaRequest.Msisdn + "&message=" + url.QueryEscape(mondiaRequest.Message) + "&lang=eg&operatorId=8"
 		}
 	case "GetCustomer":
 		requestURL = "http://payment.mondiamediamena.com/billing-gw/service/getcustomer?msisdn=" + mondiaRequest.Msisdn + "&operatorId=8"

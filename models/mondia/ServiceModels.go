@@ -107,10 +107,13 @@ func GetPaymentURL(serviceID string, trackID string) (paymentURL string, isExist
 		logs.Error("GetPaymentURL product_code 不存在 ", serviceID)
 		return
 	}
+	paymentURL = "http://login.mondiamediamena.com/billinggw-lcm/billing?method=subscribe&merchantId=247&redirect=http%3" +
+		"A%2F%2Fmm-eg.leadernethk.com/get/sub_result/" + trackID + "&productCd=" + service.ProductCode + "&subPackage=" +
+		service.SubPackage + "&operatorId=1&&imgPath=" + service.ImgPath
 
-	paymentURL = "http://sso.orange.com/mondiamedia_subscription/?method=subscribe&merchantId=93&redirect=" +
-		"http%3a%2f%2fcpx3.allcpx.com:8085%2fsubs%2fres%2f" + trackID + "&imgPath=" + service.ImgPath + "&productCd=" +
-		service.ProductCode + "&subPackage=" + service.SubPackage + "&operatorId=8&langCode=pl"
+	//paymentURL = "http://sso.orange.com/mondiamedia_subscription/?method=subscribe&merchantId=93&redirect=" +
+	//	"http%3a%2f%2fcpx3.allcpx.com:8085%2fsubs%2fres%2f" + trackID + "&imgPath=" + service.ImgPath + "&productCd=" +
+	//	service.ProductCode + "&subPackage=" + service.SubPackage + "&operatorId=8&langCode=pl"
 	fmt.Println("paymentURL: ", paymentURL)
 	return
 }

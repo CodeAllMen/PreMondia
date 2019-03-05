@@ -34,6 +34,8 @@ func (c *SubFlowController) AffTrack() {
 	todaySubNum, err1 := mondia.GetTodayMoNum(track.ServiceID)
 
 	if err != nil || err1 != nil || int(todaySubNum) >= enums.DayLimitSub {
+		//if track.ServiceID == ""
+
 		c.Ctx.WriteString("false")
 	} else {
 		c.Ctx.WriteString(strconv.FormatInt(trackID, 10))
@@ -41,7 +43,7 @@ func (c *SubFlowController) AffTrack() {
 }
 
 func (c *SubFlowController) GetCustomerRedirect() {
-	trackID := c.GetString("frmlp")
+	trackID := c.Ctx.Input.Param(":trackID") // id
 	track := new(mondia.AffTrack)
 	trackIDInt, err := strconv.Atoi(trackID)
 	if err != nil {
@@ -50,9 +52,12 @@ func (c *SubFlowController) GetCustomerRedirect() {
 	}
 
 	err = track.GetAffTrackByTrackID(int64(trackIDInt))
+	//http://pt.leadernethk.com
+	//customerRedirectURL := "http://sso.orange.com/mondiamedia_subscription/?method=getcustomer&merchantId=93&langCode=pl" +
+	//	"&redirect=http://cpx3.allcpx.com:8085/subs/getcust/" + trackID + "?product_code=" + track.ServiceID
+	customerRedirectURL := "http://login.mondiamediamena.com/billinggw-lcm/billing?method=getcustomer&merchantId=" +
+		"247&redirect=http%3A%2F%2Fmm-eg.leadernethk.com/get/customer/" + trackID + "&operatorId=1"
 
-	customerRedirectURL := "http://sso.orange.com/mondiamedia_subscription/?method=getcustomer&merchantId=93&langCode=pl" +
-		"&redirect=http://cpx3.allcpx.com:8085/subs/getcust/" + trackID + "?product_code=" + track.ServiceID
 	fmt.Println(customerRedirectURL)
 	c.redirect(customerRedirectURL)
 }
@@ -65,7 +70,7 @@ func (c *SubFlowController) CustomerResultAndStartSub() {
 	track.Operator = c.GetString("operator")
 	track.ErrorDesc = c.GetString("errorDesc")
 	track.ErrorCode = c.GetString("errorCode")
-	data,_ := json.Marshal(track)
+	data, _ := json.Marshal(track)
 	fmt.Println(string(data))
 	trackIDInt, err := strconv.Atoi(trackID)
 	if err != nil {
@@ -80,17 +85,17 @@ func (c *SubFlowController) CustomerResultAndStartSub() {
 	}
 
 	mo := new(mondia.Mo)
-	//if track.CustomerID != "" {
-	//	err := mo.GetMoByCustomerID(track.CustomerID)
-	//	// 检查用户是否已经订阅  如果mo ID 不为0表示已经订阅过
-	//	if err != nil && mo.ID != 0 {
-	//		contentURL := mondia.ServiceRegisterRequest(mo.SubscriptionID, mo.CustomerID, track.ServiceID, "register")
-	//		// 记录网盟重复送量的数据
-	//		mondia.InsertAlreadSubData(track)
-	//		// 跳转到内容站
-	//		c.redirect(contentURL)
-	//	}
-	//}
+	if track.CustomerID != "" {
+		err := mo.GetMoByCustomerID(track.CustomerID)
+		// 检查用户是否已经订阅  如果mo ID 不为0表示已经订阅过
+		if err != nil && mo.ID != 0 {
+			contentURL := mondia.ServiceRegisterRequest(mo.SubscriptionID, mo.CustomerID, track.ServiceID, "register")
+			// 记录网盟重复送量的数据
+			mondia.InsertAlreadSubData(track)
+			// 跳转到内容站
+			c.redirect(contentURL)
+		}
+	}
 
 	err = track.Update()
 	if err != nil {

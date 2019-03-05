@@ -40,17 +40,17 @@ func init() {
 	// CheckSubNum 检查订阅数量
 	beego.Router("/check/sub/num", &checksubnum.CheckSubNum{})
 
-	// 跳转到AOC页面 POST
-	beego.Router("/payment", &mondia.SubFlowController{}, "Post:GetCustomerRedirect")
 	// 订阅续订退订通知
-	beego.Router("/notification", &mondia.NotificationController{})
+	beego.Router("/mondia/notification", &mondia.NotificationController{})
 
 	// 记录每次点击
 	beego.Router("/returnid", &mondia.SubFlowController{}, "Get:AffTrack")
+	// 跳转到AOC页面 POST
+	beego.Router("/customer/req/:trackID", &mondia.SubFlowController{}, "Get:GetCustomerRedirect")
 	// GetCustomer 通知
-	beego.Router("/subs/getcust/?:trackID", &mondia.SubFlowController{}, "Get:CustomerResultAndStartSub")
+	beego.Router("/get/customer/:trackID", &mondia.SubFlowController{}, "Get:CustomerResultAndStartSub")
 	// 订阅之后的回调
-	beego.Router("/subs/res/?:trackID", &mondia.SubFlowController{}, "Get:SubResult")
+	beego.Router("/get/sub_result/:trackID", &mondia.SubFlowController{}, "Get:SubResult")
 
 	//退订请求
 	beego.Router("/unsub", &mondia.UnsubController{}, "Get:UnsubPage")

@@ -73,6 +73,7 @@ func (mo *Mo) InitNewSubMO(response *Notification, affTrack *AffTrack) *Mo {
 	mo.UserAgent = affTrack.UserAgent
 
 	// Notification init
+	mo.ServiceID = response.PackageCode
 	mo.CustomerID = response.CustomerID
 	mo.SubscriptionID = response.SubscriptionID
 	mo.Operator = response.Operator
