@@ -37,7 +37,7 @@ type UnsubPage struct {
 
 //Get 退订首页
 func (c *UnsubPage) Get() {
-	c.TplName = "unsub.tpl"
+	c.TplName = "unsub.html"
 	// c.TplName = "success.tpl"
 }
 
@@ -57,7 +57,7 @@ func (c *SendPINControllers) Post() {
 	fmt.Println(string(body))
 	if status == "error" {
 		c.Data["error"] = "0"
-		c.TplName = "unsub.tpl"
+		c.TplName = "unsub.html"
 		return
 	}
 	unsubPin := new(models.UnsubPin)
@@ -72,11 +72,11 @@ func (c *SendPINControllers) Post() {
 			c.TplName = "pin.tpl"
 		} else {
 			c.Data["error"] = "0"
-			c.TplName = "unsub.tpl"
+			c.TplName = "unsub.html"
 		}
 	} else {
 		c.Data["error"] = "0"
-		c.TplName = "unsub.tpl"
+		c.TplName = "unsub.html"
 	}
 }
 

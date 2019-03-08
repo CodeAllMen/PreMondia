@@ -3,7 +3,7 @@ package mondia
 import "github.com/astaxie/beego/orm"
 
 func init() {
-	orm.RegisterModel(new(Mo), new(Notification), new(AffTrack), new(Postback),new(ServiceInfo),new(MdSubscribe),
+	orm.RegisterModel(new(Mo), new(Notification), new(AffTrack), new(Postback),new(MdSubscribe),
 		new(UnsubPin),  new(AlreadySub),)
 }
 

@@ -19,14 +19,16 @@
 
 <body>
     <div class="container">
+     <div style="max-width: 480px;
+        margin: 27px 33px;"><img src="/static/img/KKP.png" style="width: 100%"></div>
         <div class="content">
             <form action="/getCust" id="form" method="Post">
-                <p class="m-b">MSISDN:{{.phone}}</p>
+                <p class="m-b">MSISDN: {{.phone}}</p>
                 <input class="fill_num m-b" id="pin" name="pin" placeholder="PIN : XXX" />
                 <input class="noexit" id="id" name="id" value="{{.id}}" style="display: none"/>
                 <input class="noexit" id="service_id" name="service_id" value="{{.service_id}}" style="display: none"/>
-                <p class="ver">Wprowadź kod PIN otrzymany w SMS-ie</p>
-                <a type="button" class="unsub" id="ver">zweryfikować</a>
+                <p class="ver">أدخل رمز PIN المستلم في رسالة SMS</p>
+                <a type="button" class="unsub" id="ver">تحقق من</a>
             </form>
         </div>
     </div>

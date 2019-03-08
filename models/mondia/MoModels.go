@@ -68,7 +68,6 @@ func (mo *Mo) InitNewSubMO(response *Notification, affTrack *AffTrack) *Mo {
 	mo.ClickID = affTrack.ClickID
 	mo.ProID = affTrack.ProID
 	mo.PubID = affTrack.PubID
-	mo.ServiceID = affTrack.ServiceID
 	mo.IP = affTrack.IP
 	mo.UserAgent = affTrack.UserAgent
 
@@ -254,7 +253,7 @@ func (mo *Mo) CheckTodaySubNumMoreLimit(serviceID string) (isCanSub bool) {
 	}
 	// 检查今日订阅数是否超过了订阅限制
 	if int(subNum) >= limitSubNum {
-		logs.Error("CheckTodaySubNumMoreLimit 超过了订阅限制 limitSubNum: ", limitSubNum, " today sub num: ", subNum)
+		logs.Error("CheckTodaySubNumMoreLimit 超过了订阅限制 limitSubNum: ", limitSubNum, " today sub num: ", subNum, "ERROR")
 	} else {
 		isCanSub = true
 	}

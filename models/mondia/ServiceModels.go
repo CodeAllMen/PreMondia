@@ -7,6 +7,7 @@ import (
 	"gopkg.in/yaml.v2"
 	"io/ioutil"
 	"net/http"
+	"net/url"
 	"path/filepath"
 	"strings"
 )
@@ -17,20 +18,28 @@ type Config struct {
 }
 
 type ServiceInfo struct {
-	ServiceID   string `yaml:"service_id" orm:"pk;column(service_id)"`
-	ServiceName string `yaml:"service_name"`
-	ProductCode string `yaml:"product_code"`
-	RequestURL  string `yaml:"request_url" orm:"column(request_url)"`
-	MrchantID   string `yaml:"mrchant_id" orm:"column(mrchant_id)"`
-	ProdPrice   string `yaml:"prod_price"`
-	ImgPath     string `yaml:"img_path"`
-	OperatorID  string `yaml:"operator_id"`
-	SubPackage  string `yaml:"sub_package"`
-	LpURL       string `yaml:"LP_url" orm:"column(lp_url)"`
-	DeleteURL   string `yaml:"delete_url" orm:"column(delete_url)"`
-	ContentURL  string `yaml:"content_url" orm:"column(content_url)"`
-	UnsubURL    string `yaml:"unsub_url" orm:"column(unsub_url)"`
-	RegisterURL string `yaml:"register_url" orm:"column(register_url)"`
+	ServiceID              string `yaml:"service_id"`
+	ServiceName            string `yaml:"service_name"`
+	ProductCode            string `yaml:"product_code"`
+	Password               string `yaml:"password"`
+	Username               string `yaml:"username"`
+	RequestURL             string `yaml:"request_url"`
+	MrchantID              string `yaml:"mrchant_id" `
+	ProdPrice              string `yaml:"prod_price"`
+	ImgPath                string `yaml:"img_path"`
+	OperatorID             string `yaml:"operator_id"`
+	SubPackage             string `yaml:"sub_package"`
+	LpURL                  string `yaml:"LP_url"`
+	DeleteURL              string `yaml:"delete_url"`
+	ContentURL             string `yaml:"content_url"`
+	UnsubURL               string `yaml:"unsub_url" `
+	RegisterURL            string `yaml:"register_url"`
+	MondiaRequestURL       string `yaml:"mondia_request_url"`        // mondia 订阅url
+	GetCustomerCallbackURL string `yaml:"get_customer_callback_url"` // 获取CustomerID 之后的回到URL
+	SubResultRedirect      string `yaml:"sub_result_redirect"`
+	UnsubPINMessage        string `yaml:"unsub_pin_message"`
+	SuccessSubMessage      string `yaml:"success_sub_message"`
+	Language               string `yaml:"language"`
 }
 
 var ServiceData = make(map[string]ServiceInfo)
@@ -48,11 +57,6 @@ func InitServiceConfig() {
 		panic(err)
 	}
 	ServiceData = config.Service
-
-	o := orm.NewOrm()
-	for _, v := range ServiceData {
-		_, _ = o.Insert(&v)
-	}
 
 }
 
@@ -85,7 +89,6 @@ func ServiceRegisterRequest(subscriptionID, customerID, serviceID, types string)
 		registerURL = strings.Replace(registerURL, "{msisdn}", customerID, -1)
 		requestURL = registerURL
 	}
-	fmt.Println(requestURL)
 	resp, err := http.Get(requestURL)
 	if err == nil {
 		logs.Info(fmt.Sprintf("HttpRequest Success %s service %s subID: %s  CustomerId: %s ",
@@ -101,19 +104,12 @@ func ServiceRegisterRequest(subscriptionID, customerID, serviceID, types string)
 	return
 }
 
-func GetPaymentURL(serviceID string, trackID string) (paymentURL string, isExist bool) {
-	service, isExist := ServiceData[serviceID]
-	if !isExist {
-		logs.Error("GetPaymentURL product_code 不存在 ", serviceID)
-		return
-	}
-	paymentURL = "http://login.mondiamediamena.com/billinggw-lcm/billing?method=subscribe&merchantId=247&redirect=http%3" +
-		"A%2F%2Fmm-eg.leadernethk.com/get/sub_result/" + trackID + "&productCd=" + service.ProductCode + "&subPackage=" +
-		service.SubPackage + "&operatorId=1&&imgPath=" + service.ImgPath
+func GetPaymentURL(serviceConfig ServiceInfo, trackID string) (paymentURL string) {
 
-	//paymentURL = "http://sso.orange.com/mondiamedia_subscription/?method=subscribe&merchantId=93&redirect=" +
-	//	"http%3a%2f%2fcpx3.allcpx.com:8085%2fsubs%2fres%2f" + trackID + "&imgPath=" + service.ImgPath + "&productCd=" +
-	//	service.ProductCode + "&subPackage=" + service.SubPackage + "&operatorId=8&langCode=pl"
+	paymentURL = fmt.Sprintf("%s?method=subscribe&merchantId=%s&redirect=%s&productCd=%s&"+
+		"subPackage=%s&operatorId=%s&imgPath=%s", serviceConfig.MondiaRequestURL, serviceConfig.MrchantID,
+		url.QueryEscape(serviceConfig.SubResultRedirect+trackID), serviceConfig.ProductCode, serviceConfig.SubPackage,
+		serviceConfig.OperatorID, url.QueryEscape(serviceConfig.ImgPath))
 	fmt.Println("paymentURL: ", paymentURL)
 	return
 }
@@ -139,14 +135,15 @@ func GetContentURL(serviceID string) (contentURL string) {
 }
 
 func GetPINUnsubMessage(serviceID, PIN string) (message string) {
+	fmt.Println(serviceID)
 	service, isExist := ServiceData[serviceID]
+	fmt.Println(service)
 	if !isExist {
-		message = "Kod PIN, który anulowałeś swoją subskrypcję, to " + PIN
 		logs.Error("GetPINUnsubMessage product_code 不存在 ", serviceID)
 		return
 	}
-
-	message = fmt.Sprintf("[%s] Kod PIN, który anulowałeś swoją subskrypcję, to "+PIN, service.ServiceID)
+	message = strings.Replace(service.UnsubPINMessage, "{PIN}", PIN, -1)
+	fmt.Println(message)
 	return
 
 }

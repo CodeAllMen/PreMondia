@@ -10,25 +10,6 @@ import (
 
 func init() {
 
-	//// 跳转到AOC页面 POST
-	//beego.Router("/payment", &orangesub.GetPostRequestControlelr{})
-	//// 订阅续订退订通知
-	//beego.Router("/notification", &notification.MondiaNotificationController{})
-	//
-	//// 记录每次点击
-	//beego.Router("/returnid", &orangesub.LPTrackClickControllers{})
-	//// GetCustomer 通知
-	//beego.Router("/subs/getcust/?:trackID", &orangesub.GetCustomerControllers{})
-	//// 订阅之后的回调
-	//beego.Router("/subs/res/?:trackID", &orangesub.MondiaSubscribeController{})
-	//
-	////退订请求
-	//beego.Router("/unsub", &unsub.UnsubPage{})
-	//beego.Router("/unsubPin", &unsub.SendPINControllers{}) //退订请求发送pin
-	//beego.Router("/getCust", &unsub.UnsubGetCustomer{})    // 获取pin之后判断CustomerID 然后退订
-	//// 通过订阅ID 退订服务
-	//beego.Router("/unsub/subid", &unsub.SubIDUnsubRequest{})
-
 	// 查询数据接口
 	beego.Router("/aff_data", &searchAPI.AffController{}) // 查询网盟转化数据
 	beego.Router("/aff_mt", &searchAPI.SearceAffMtController{})
@@ -53,9 +34,8 @@ func init() {
 	beego.Router("/get/sub_result/:trackID", &mondia.SubFlowController{}, "Get:SubResult")
 
 	//退订请求
-	beego.Router("/unsub", &mondia.UnsubController{}, "Get:UnsubPage")
-	beego.Router("/unsubPin", &mondia.UnsubController{}, "Post:UnsubSendPin") //退订请求发送pin
+	beego.Router("/unsub/:serviceID", &mondia.UnsubController{}, "Get:UnsubPage")
+	beego.Router("/unsubPin/:serviceID", &mondia.UnsubController{}, "Post:UnsubSendPin") //退订请求发送pin
 	beego.Router("/getCust", &mondia.UnsubController{}, "Post:UnsubRequest")  // 获取pin之后判断CustomerID 然后退订
 	// 通过订阅ID 退订服务
-	//beego.Router("/unsub/subid", &unsub.SubIDUnsubRequest{})
 }

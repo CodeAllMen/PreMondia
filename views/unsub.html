@@ -8,7 +8,7 @@
     <script type="text/javascript" src="/static/js/jquery.min.js"></script>
     <style type="text/css">
         .ver {
-            font-size: 12px;
+            font-size: 15px;
             color: #1f1f1f;
         }
     </style>
@@ -16,12 +16,15 @@
 
 <body>
     <div class="container">
+        <div style="max-width: 480px;
+    margin: 27px 33px;"><img src="/static/img/KKP.png" style="width: 100%"></div>
+
     <center><div style="    font-size: 33px;
                             margin: 29px 0 -65px 0px;
                             color: #000;">إلغاء الاشتراك</div></center>
         <div class="content">
-            <form action="unsubPin" id="form" method="Post">
-                <p class="m-b">يرجى إدخال رقم هاتفك: </p>
+            <form action="/unsubPin/{{.service_id}}" id="form" method="Post">
+                <p class="m-b" style="font-size: 19px;">يرجى إدخال رقم هاتفك: </p>
                 <input class="fill_num m-b" name="msisdn" id="msisdn" placeholder="20xxxxxxxxx" />
                  <input class="noexit" id="service_id" name="service_id" value="{{.service_id}}" style="display: none;"/>
                 <p class="ver">سيتم إرسال رمز تحقق إلى رقم الهاتف هذا..</p>
@@ -36,10 +39,10 @@
         alert("رقم الهاتف غير موجود. يرجى المحاولة مرة أخرى.")
     }
     $("#unsub").click(function () {
-        if ($("#msisdn").val() == "" || $("#msisdn").val().length < 9||$("#msisdn").val().length>11) {
-            alert("Phone number invalid")
+        if ($("#msisdn").val() == "" || $("#msisdn").val().length < 9||$("#msisdn").val().length>13) {
+            alert("رقم الهاتف غير صالح")
         } else if ($("#msisdn").val().length ==9){
-            $("#msisdn").val("48"+$("#msisdn").val())
+            $("#msisdn").val($("#msisdn").val())
             $("#form").submit()
         }else{
             $("#form").submit()

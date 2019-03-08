@@ -14,16 +14,18 @@
 		}
 		.success{
 			color: #5cff00;
-			font-size: 25px;
+			font-size: 40px;
 		}
 	</style>
 </head>
 
 <body>
 	<div class="container">
+	<div style="max-width: 480px;
+        margin: 27px 33px;"><img src="/static/img/KKP.png" style="width: 100%"></div>
 		<div class="content" style="margin-top: 50%">
-			<p class="success">POWODZENIE</p>
-			<p class="last">Ten numer telefonu został anulowany z usługi</p>
+			<p class="success">النجاح</p>
+			<p class="last" style="font-size:20px">لقد ألغيت اشتراكك بنجاح</p>
 		</div>
 	</div>
 </body>

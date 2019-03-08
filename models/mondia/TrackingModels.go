@@ -57,8 +57,7 @@ func (track *AffTrack) Update() error {
 
 func (track *AffTrack) GetAffTrackByTrackID(trackID int64) error {
 	o := orm.NewOrm()
-	track.TrackID = trackID
-	err := o.Read(track)
+	err := o.QueryTable(track.TableName()).Filter("track_id", trackID).One(track)
 	if err != nil {
 		logs.Error("通过trackID 查询点击信息失败，未找到此trackID： ", trackID)
 	}

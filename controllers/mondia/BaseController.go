@@ -37,6 +37,7 @@ func (c *BaseController) CheckError(err error, errorCode enums.ErrorCode, msg ..
 func (c *BaseController) NewInsertMo(notification *mondia.Notification, affTrack *mondia.AffTrack) (notificationType string) {
 	mo := new(mondia.Mo)
 	isExist := mo.CheckSubIDIsExist(notification.SubscriptionID)
+	serviceConfig := c.getServiceConfig(notification.ProductCode)
 	// 判断用户是否已经存在
 	if !isExist {
 		mo = new(mondia.Mo)
@@ -49,7 +50,7 @@ func (c *BaseController) NewInsertMo(notification *mondia.Notification, affTrack
 		mo.PostbackCode = code
 		contentURL := mondia.GetContentURL(mo.ServiceID)
 		//订阅成功发送短信
-		mondia.SubSceessSendSMS(contentURL, mo.CustomerID, mo.SubscriptionID)
+		mondia.SubSceessSendSMS(serviceConfig, contentURL, mo.CustomerID, mo.SubscriptionID)
 
 		if mo.AffName != "" {
 			// 有转化后发邮件
@@ -117,4 +118,32 @@ func (c *BaseController) UnsubFailed(serviceID string) {
 	c.Data["service_id"] = serviceID
 	c.Data["contentURL"] = mondia.GetContentURL(serviceID)
 	c.TplName = "fail.tpl"
+}
+
+func (c *BaseController) getServiceConfig(serviceID string) mondia.ServiceInfo {
+	serviceConfig, isExist := c.serviceCofig(serviceID)
+	if !isExist {
+		logs.Error("服务ID不存在，请检查服务信息，servideID: ", serviceID, "ERROR")
+		c.redirect("http://www.google.com")
+	}
+	return serviceConfig
+}
+
+func (c *BaseController) serviceCofig(serviceID string) (mondia.ServiceInfo, bool) {
+	serviceConfig, isExist := mondia.ServiceData[serviceID]
+	return serviceConfig, isExist
+}
+
+// 将string 类型的trackID 转为 INT 类型
+func (c *BaseController) trackIDStrToInt(trackID string) int {
+	trackIDInt, err := c.strToInt(trackID)
+	if err != nil {
+		logs.Error("trackID string to int 错误，ERROR: ", err.Error(), " trackID: ", trackID)
+		c.redirect("http://google.com")
+	}
+	return trackIDInt
+}
+
+func (c *BaseController) strToInt(str string) (int, error) {
+	return strconv.Atoi(str)
 }

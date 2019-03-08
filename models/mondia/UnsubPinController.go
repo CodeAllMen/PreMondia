@@ -15,6 +15,8 @@ type UnsubPin struct {
 	Sendtime  string
 	PinStatus string
 }
+
+// 退订获取CustomerID
 type UnsubGetCustomer struct {
 	Id            int64  `orm:"pk;auto"`
 	TransactionId string `xml:"TransactionId"`

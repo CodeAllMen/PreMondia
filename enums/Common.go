@@ -24,4 +24,11 @@ const (
 	Enabled
 )
 
+const (
+	SubStatusSuccess      = "SUCCESS"
+	SubStatusActive       = "ACTIVE"
+	SubStatusSuspended    = "SUSPENDED"
+	SubStatusUnsubscribed = "UNSUBSCRIBED"
+)
+
 var DayLimitSub, _ = beego.AppConfig.Int("limitSubNum")
