@@ -8,7 +8,9 @@ import (
 	"github.com/MobileCPX/PreMondia/models/unsub"
 	"github.com/astaxie/beego/logs"
 	"math/rand"
+	"net/url"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -160,8 +162,102 @@ func (c *UnsubController) UnsubRequest() {
 	}
 }
 
+func (c *UnsubController) UnsubByCookie() {
+	subID := c.GetString("sub_id")
+	serviceID := c.Ctx.Input.Param(":serviceID")
+	requestData := new(mondia.MondiaRequestData)
+	serviceConfig := c.getServiceConfig(serviceID)
+	mo := new(mondia.Mo)
+	_, err := mo.GetMoBySubscriptionID(subID)
+	if err == nil && mo.ID != 0 {
+		requestData.SubscriptionID = mo.SubscriptionID
+		requestData.RequestType = "Unsub"
 
+		status, body := requestData.Request(serviceConfig)
+		fmt.Println(string(body))
+		if status != "error" {
+			unsubNotification := new(models.MondiaCharge)
+			xmlErr := xml.Unmarshal(body, unsubNotification)
+			if xmlErr != nil {
+				c.unsubGetCustomerID(serviceConfig)
+			}
+			err := unsub.InsertUnsubData(unsubNotification)
+			if err == nil && unsubNotification.ResponseCode == "1001" { // 取消订阅成功
+				_, _ = mo.UnsubUpdateMo(mo.SubscriptionID)
+				c.Data["url"] = strings.Replace(serviceConfig.ContentURL, "{subID}", subID, -1)
+				c.TplName = "success.tpl"
+				return
+			} else if err == nil && unsubNotification.ResponseCode == "3029" { // 之前已经取消
+				c.Data["url"] = strings.Replace(serviceConfig.ContentURL, "{subID}", subID, -1)
+				c.TplName = "success.tpl"
+				return
+			}
+		} else {
+			c.unsubGetCustomerID(serviceConfig)
+			return
+		}
+	}else{
+		c.unsubGetCustomerID(serviceConfig)
+	}
+}
 
-func (c *UnsubController)setPINPage(){
+func (c *UnsubController) unsubGetCustomerID(serviceConfig mondia.ServiceInfo) {
+	customerRedirectURL := serviceConfig.MondiaRequestURL + "?method=getcustomer&merchantId=" +
+		serviceConfig.MrchantID + "&redirect=" + url.QueryEscape(serviceConfig.UnsubGetCustomerCallbackURL) +
+		"&operatorId=" + serviceConfig.OperatorID
+	c.redirect(customerRedirectURL)
+}
 
+func (c *UnsubController) UnsubGetCustomerIDResult() {
+	serviceID := c.Ctx.Input.Param(":serviceID")
+	customerID := c.GetString("customerId")
+	serviceConfig := c.getServiceConfig(serviceID)
+	if customerID != "" {
+		c.unsubReuqest(customerID, serviceConfig)
+	} else {
+		c.Data["service_id"] = serviceID
+		c.TplName = "unsub.html"
+	}
+}
+
+func (c *UnsubController) unsubReuqest(customerID string, serviceConfig mondia.ServiceInfo) {
+	mo := new(mondia.Mo)
+	mo.UnsubGetMoByCustomerID(customerID, serviceConfig.ServiceID)
+	requestData := new(mondia.MondiaRequestData)
+	if mo.SubscriptionID != "" {
+		mo.Msisdn = requestData.Msisdn
+		_ = mo.UpdateMO()
+		requestData.SubscriptionID = mo.SubscriptionID
+		requestData.RequestType = "Unsub"
+
+		status, body := requestData.Request(serviceConfig)
+		fmt.Println(string(body))
+		if status != "error" {
+			unsubNotification := new(models.MondiaCharge)
+			xmlErr := xml.Unmarshal(body, unsubNotification)
+			if xmlErr != nil {
+				c.UnsubFailed(serviceConfig.ServiceID)
+				return
+			}
+			err := unsub.InsertUnsubData(unsubNotification)
+			if err == nil && unsubNotification.ResponseCode == "1001" { // 取消订阅成功
+				_, _ = mo.UnsubUpdateMo(mo.SubscriptionID)
+				c.Data["url"] = mondia.GetContentURL(serviceConfig.ServiceID)
+				c.TplName = "success.tpl"
+				return
+			} else if err == nil && unsubNotification.ResponseCode == "3029" { // 之前已经取消
+				c.Data["url"] = mondia.GetContentURL(serviceConfig.ServiceID)
+				c.TplName = "success.tpl"
+				return
+			}
+		} else {
+			//  "用户不存在"
+			c.UnsubFailed(serviceConfig.ServiceID)
+			return
+		}
+	} else {
+		//  "用户不存在"
+		c.UnsubFailed(serviceConfig.ServiceID)
+		return
+	}
 }

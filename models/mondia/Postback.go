@@ -36,10 +36,12 @@ func StartPostback(mo *Mo, todaySubNum, todayPostbackNum int64) (isSuccess bool,
 }
 
 func getPostbackInfoByAffName(affName, serviceName string) (*Postback, error) {
-	postback := &Postback{AffName: affName}
+	//postback := &Postback{AffName: affName}
+	postback := new(Postback)
 	o := orm.NewOrm()
 	if affName != "" {
-		err := o.Read(postback)
+		//err := o.Read(postback)
+		err := o.QueryTable(PostbackTBName()).Filter("aff_name", affName).One(postback)
 		if err != nil {
 			logs.Error("用户订阅成功，但是没有找到此网盟 ", affName)
 			util.BeegoEmail(serviceName, "没有找到此 "+affName+"信息", affName+" postback回传失败", []string{})

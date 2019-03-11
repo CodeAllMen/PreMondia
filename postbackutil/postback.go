@@ -19,6 +19,7 @@ func PostbackRequest() {
 		// 	return
 		// }
 		// intTrackID, _ := strconv.Atoi(trackID)
+
 		trackData := getMdSubscribeTableTrackID(oneMo.CustomerID) // 获取用户点击信息
 		oneMo.ServiceType = trackData.ServiceType
 		oneMo.ClickID = trackData.ClickID

@@ -1,7 +1,6 @@
 package mondia
 
 import (
-	"encoding/json"
 	"fmt"
 	"github.com/MobileCPX/PreMondia/enums"
 	"github.com/MobileCPX/PreMondia/models/mondia"
@@ -70,8 +69,8 @@ func (c *SubFlowController) CustomerResultAndStartSub() {
 	track.Operator = c.GetString("operator")
 	track.ErrorDesc = c.GetString("errorDesc")
 	track.ErrorCode = c.GetString("errorCode")
-	data, _ := json.Marshal(track)
-	fmt.Println(string(data))
+	//data, _ := json.Marshal(track)
+	//fmt.Println(string(data))
 	trackIDInt, err := strconv.Atoi(trackID)
 	if err != nil {
 		logs.Error("trackID string to int failed ,redirect google page ERROR")
@@ -88,7 +87,7 @@ func (c *SubFlowController) CustomerResultAndStartSub() {
 
 	mo := new(mondia.Mo)
 	// J检查用户之前是否已经订阅过服务
-	c.checkUserSubStatus(track, mo)
+	//c.checkUserSubStatus(track, mo)
 
 	err = track.Update()
 	if err != nil {

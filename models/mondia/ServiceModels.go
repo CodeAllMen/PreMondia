@@ -18,28 +18,29 @@ type Config struct {
 }
 
 type ServiceInfo struct {
-	ServiceID              string `yaml:"service_id"`
-	ServiceName            string `yaml:"service_name"`
-	ProductCode            string `yaml:"product_code"`
-	Password               string `yaml:"password"`
-	Username               string `yaml:"username"`
-	RequestURL             string `yaml:"request_url"`
-	MrchantID              string `yaml:"mrchant_id" `
-	ProdPrice              string `yaml:"prod_price"`
-	ImgPath                string `yaml:"img_path"`
-	OperatorID             string `yaml:"operator_id"`
-	SubPackage             string `yaml:"sub_package"`
-	LpURL                  string `yaml:"LP_url"`
-	DeleteURL              string `yaml:"delete_url"`
-	ContentURL             string `yaml:"content_url"`
-	UnsubURL               string `yaml:"unsub_url" `
-	RegisterURL            string `yaml:"register_url"`
-	MondiaRequestURL       string `yaml:"mondia_request_url"`        // mondia 订阅url
-	GetCustomerCallbackURL string `yaml:"get_customer_callback_url"` // 获取CustomerID 之后的回到URL
-	SubResultRedirect      string `yaml:"sub_result_redirect"`
-	UnsubPINMessage        string `yaml:"unsub_pin_message"`
-	SuccessSubMessage      string `yaml:"success_sub_message"`
-	Language               string `yaml:"language"`
+	ServiceID                   string `yaml:"service_id"`
+	ServiceName                 string `yaml:"service_name"`
+	ProductCode                 string `yaml:"product_code"`
+	Password                    string `yaml:"password"`
+	Username                    string `yaml:"username"`
+	RequestURL                  string `yaml:"request_url"`
+	MrchantID                   string `yaml:"mrchant_id" `
+	ProdPrice                   string `yaml:"prod_price"`
+	ImgPath                     string `yaml:"img_path"`
+	OperatorID                  string `yaml:"operator_id"`
+	SubPackage                  string `yaml:"sub_package"`
+	LpURL                       string `yaml:"LP_url"`
+	DeleteURL                   string `yaml:"delete_url"`
+	ContentURL                  string `yaml:"content_url"`
+	UnsubURL                    string `yaml:"unsub_url" `
+	RegisterURL                 string `yaml:"register_url"`
+	MondiaRequestURL            string `yaml:"mondia_request_url"`        // mondia 订阅url
+	GetCustomerCallbackURL      string `yaml:"get_customer_callback_url"` // 获取CustomerID 之后的回到URL
+	UnsubGetCustomerCallbackURL string `yaml:"unsub_get_customer_callback_url"`
+	SubResultRedirect           string `yaml:"sub_result_redirect"`
+	UnsubPINMessage             string `yaml:"unsub_pin_message"`
+	SuccessSubMessage           string `yaml:"success_sub_message"`
+	Language                    string `yaml:"language"`
 }
 
 var ServiceData = make(map[string]ServiceInfo)

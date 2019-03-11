@@ -10,10 +10,11 @@ import (
 // Mo mo表数据
 type Mo struct {
 	// MO 必须要有的参数
-	ID             int64  `orm:"pk;auto;column(id)"`              //自增ID
-	SubscriptionID string `orm:"column(subscription_id)"`         // 订阅id
-	Operator       string `orm:"column(operator);size(15)"`       // 运营商
-	Msisdn         string `orm:"column(msisdn);size(20)"`         // 电话号码
+	ID             int64  `orm:"pk;auto;column(id)"`        //自增ID
+	SubscriptionID string `orm:"column(subscription_id)"`   // 订阅id
+	Operator       string `orm:"column(operator);size(15)"` // 运营商
+	Msisdn         string `orm:"column(msisdn);size(20)"`   // 电话号码
+	ServiceID      string `orm:"column(service_id);size(50)"`
 	Price          string `orm:"column(price);size(10)"`          // 扣费单价
 	SubStatus      int    `orm:"column(sub_status);size(1)"`      // 订阅状态 1（订阅）0 （退订）
 	PostbackStatus int    `orm:"column(postback_status);size(1)"` // postback 状态
@@ -36,7 +37,6 @@ type Mo struct {
 	// ModifyDate     string `orm:"column(modify_date);size(20)"`    // 最后一次扣费成功时间
 
 	// MO 根据需求添加参数有的参数
-	ServiceID        string `orm:"column(service_id);size(50)"`
 	MsisdnStatusCode string `orm:"size(5)"`
 	ReferenceID      string
 	CustomerID       string `orm:"column(customer_id)"`
@@ -221,9 +221,21 @@ func (mo *Mo) FailedMTUpdateMo(subscriptionID string) (notificationType string, 
 func GetMoBySubscriptionID(subscriptionID string) (*Mo, error) {
 	mo := &Mo{SubscriptionID: subscriptionID}
 	o := orm.NewOrm()
-	err := o.Read(mo)
+	//err := o.Read(mo)
+	err := o.QueryTable(MoTBName()).Filter("subscription_id", subscriptionID).One(mo)
 	if err != nil {
 		logs.Error("根据subscription_id 查询订阅信息失败 Subscript ID ", subscriptionID, err.Error())
+	}
+	return mo, err
+}
+
+// GetMoBySubscriptionID 根据SubID 查询订阅信息
+func (mo *Mo) GetMoBySubscriptionID(subscriptionID string) (*Mo, error) {
+	o := orm.NewOrm()
+	//err := o.Read(mo)
+	err := o.QueryTable(MoTBName()).Filter("subscription_id", subscriptionID).One(mo)
+	if err != nil {
+		logs.Error("MO GetMoBySubscriptionID 根据subscription_id 查询订阅信息失败 Subscript ID ", subscriptionID, err.Error())
 	}
 	return mo, err
 }

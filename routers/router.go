@@ -34,8 +34,11 @@ func init() {
 	beego.Router("/get/sub_result/:trackID", &mondia.SubFlowController{}, "Get:SubResult")
 
 	//退订请求
+	beego.Router("/unsub/cookie/sub_id/:serviceID",&mondia.UnsubController{},"Get:UnsubByCookie")
+	beego.Router("/unsub/get/customer/:serviceID", &mondia.UnsubController{}, "Get:UnsubGetCustomerIDResult")
+
 	beego.Router("/unsub/:serviceID", &mondia.UnsubController{}, "Get:UnsubPage")
 	beego.Router("/unsubPin/:serviceID", &mondia.UnsubController{}, "Post:UnsubSendPin") //退订请求发送pin
-	beego.Router("/getCust", &mondia.UnsubController{}, "Post:UnsubRequest")  // 获取pin之后判断CustomerID 然后退订
+	beego.Router("/getCust", &mondia.UnsubController{}, "Post:UnsubRequest")             // 获取pin之后判断CustomerID 然后退订
 	// 通过订阅ID 退订服务
 }

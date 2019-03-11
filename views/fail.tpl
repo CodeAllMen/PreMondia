@@ -30,11 +30,13 @@
 
 <body>
     <div class="container">
+    <div style="max-width: 480px;
+            margin: 27px 33px;"><img src="/static/img/KKP.png" style="width: 100%"></div>
         <div class="content" style="margin-top: 34%">
-            <p class="success">Zawieść</p>
-            <p class="last">Numer telefonu komórkowego lub PIN jest nieprawidłowy</p>
-            <a id="retry" type="button" class="unsub retry" onClick="location.href='/unsub?service_id={{.service_id}}'">Retry</a>
-            <a id="go_home" type="button" class="unsub back" onClick="location.href='{{.contentURL}}'">Go to HOME </a>
+            <p class="success">فشل إلغاء الاشتراك</p>
+            <p class="last">فشل إلغاء الاشتراك ، يرجى المحاولة مرة أخرى</p>
+            <a id="retry" type="button" class="unsub retry" onClick="location.href='/unsub/{{.service_id}}'">إعادة المحاولة</a>
+            <a id="go_home" type="button" class="unsub back" onClick="location.href='{{.contentURL}}'">اذهب إلى الصفحة الرئيسية </a>
         </div>
     </div>
 </body>

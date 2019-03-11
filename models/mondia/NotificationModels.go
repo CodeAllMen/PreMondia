@@ -9,16 +9,15 @@ import (
 // Notification 订阅通知信息
 type Notification struct {
 	// Notification 必须要有的参数
-	ID               int64  `orm:"pk;auto;column(id)"`                 //自增ID
-	NotificationType string `orm:"column(notification_type);size(15)"` // 通知类型
-	Sendtime         string `orm:"column(sendtime);size(30)"`          // 点击时间
+	ID               int64  `orm:"pk;auto;column(id)"`                           //自增ID
+	NotificationType string `orm:"column(notification_type);size(15)"`           // 通知类型
+	Sendtime         string `orm:"column(sendtime);size(30)"`                    // 点击时间
+	SubscriptionID   string `orm:"column(subscription_id)" xml:"SubscriptionID"` // 订阅id
+	TransactionID    string `orm:"column(transaction_id)" xml:"TransactionId"`
+	TransactionTime  string `xml:"TransactionTimestamp"`
+	CustomerID       string `orm:"column(customer_id)" xml:"CustomerID"`
+	ServiceID        string `orm:"column(service_id)" xml:"ServiceID"`
 
-	SubscriptionID  string `orm:"column(subscription_id)" xml:"SubscriptionID"` // 订阅id
-	TransactionID   string `orm:"column(transaction_id)" xml:"TransactionId"`
-	TransactionTime string `xml:"TransactionTimestamp"`
-	CustomerID      string `orm:"column(customer_id)" xml:"CustomerID"`
-
-	ServiceID          string `orm:"column(service_id)" xml:"ServiceID"`
 	ProductCode        string `xml:"ProductCode"`
 	PackageCode        string `xml:"PackageCode"`
 	Operator           string `xml:"OperatorName"`
