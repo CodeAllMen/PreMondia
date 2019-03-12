@@ -39,7 +39,7 @@ var char_data1 = []
 
 function getAffiliateData() {
 	$.ajax({
-		url: 'http://cpx3.allcpx.com/aff_data',
+		url: '/aff_data',
 		type: 'GET',
 		data: data_aff,
 		dataType: "json",
@@ -75,7 +75,7 @@ function getAffiliateData() {
 
 function getQualitypage() {
 	$.ajax({
-		url: 'http://cpx3.allcpx.com/quality',
+		url: '/quality',
 		type: 'GET',
 		data: QualityDatas,
 		dataType: "json",
@@ -105,7 +105,7 @@ function getQualitypage() {
 
 function getEerytimeQualitypage() {
 	$.ajax({
-		url: 'http://cpx3.allcpx.com/sub/mo_data',
+		url: '/sub/mo_data',
 		type: 'GET',
 		data: subMoData,
 		dataType: "json",
@@ -135,7 +135,7 @@ function getEerytimeQualitypage() {
 function ComplaintsData(userMsisdn) {
 	var list_title1 = [];
 	$.ajax({
-		url: 'http://cpx3.allcpx.com/msisdn',
+		url: '/msisdn',
 		type: 'GET',
 		data: { 'msisdn': userMsisdn },
 		dataType: 'json',
@@ -166,7 +166,7 @@ function GetEveryDaySubPage() {
 	var affNameColumn = [];
 	// var clickType =[];
 	$.ajax({
-		url: 'http://cpx3.allcpx.com/sub/everyday/data',
+		url: '/sub/everyday/data',
 		type: 'GET',
 		data: subeveryDayData,
 		dataType: "json",
