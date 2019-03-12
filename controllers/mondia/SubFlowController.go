@@ -52,9 +52,6 @@ func (c *SubFlowController) GetCustomerRedirect() {
 	_ = track.GetAffTrackByTrackID(int64(trackIDInt))
 	serviceConfig := c.getServiceConfig(track.ServiceID)
 
-	//http://pt.leadernethk.com
-	//customerRedirectURL := "http://sso.orange.com/mondiamedia_subscription/?method=getcustomer&merchantId=93&langCode=pl" +
-	//	"&redirect=http://cpx3.allcpx.com:8085/subs/getcust/" + trackID + "?product_code=" + track.ServiceID
 	customerRedirectURL := serviceConfig.MondiaRequestURL + "?method=getcustomer&merchantId=" +
 		serviceConfig.MrchantID + "&redirect=" + url.QueryEscape(serviceConfig.GetCustomerCallbackURL+trackID) + "&operatorId=" + serviceConfig.OperatorID
 	fmt.Println(customerRedirectURL)
@@ -86,8 +83,8 @@ func (c *SubFlowController) CustomerResultAndStartSub() {
 	serviceConfig := c.getServiceConfig(track.ServiceID)
 
 	mo := new(mondia.Mo)
-	// J检查用户之前是否已经订阅过服务
-	//c.checkUserSubStatus(track, mo)
+	// 检查用户之前是否已经订阅过服务
+	c.checkUserSubStatus(track, mo)
 
 	err = track.Update()
 	if err != nil {
@@ -177,4 +174,3 @@ func (c *SubFlowController) checkUserSubStatus(track *mondia.AffTrack, mo *mondi
 		}
 	}
 }
-

@@ -258,7 +258,7 @@ function GetEveryDaySubPage() {
 				lists2.push('<th style="background-color:#2BD5D5"><div class="click_num2">' + c.SuccessMt + '</div></th>')
 				lists2.push('<th style="background-color:#2BD5D5"><div class="click_num2">' + total_Unsub + '</div></th>')
 				lists2.push('<th style="background-color:#2BD5D5"><div class="click_num2">' + c.DaySpend + '</div></th>')
-		
+
 				lists2.push('<th style="background-color:#2BD5D5"><div class="click_num2">' + c.DayRevenue + '</div></th>')
 
 				lists2.push('<th style="background-color:#5EA287"><div class="click_num2">' + c.GrandTotalSub + '</div></th>')
@@ -267,7 +267,7 @@ function GetEveryDaySubPage() {
 				console.log(c.TotalSuccessMt)
 				lists2.push('<th style="background-color:#5EA287"><div class="click_num2">' + c.GrandTotalMtRate + '</div></th>')
 				lists2.push('<th style="background-color:#5EA287"><div class="click_num2">' + c.GrandTotalSpend + '</div></th>')
-				
+
 				lists2.push('<th style="background-color:#5EA287"><div class="click_num2">' + c.GrandTotalRevenue + '</div></th>')
 				lists2.push('<th style="background-color:#5EA287"><div class="click_num2">' + c.GrandTotalProfitAndLoss + '</div></th>')
 				lists2.push('<th><div class="click_num2"></div></th>')
@@ -293,7 +293,7 @@ function ShowChart() {
 	var end_date = document.getElementById("end_time_char").value ? document.getElementById("end_time_char").value : NowDate();
 	var date, spend, profitAndLoss, revenue;
 	$.ajax({
-		url: 'http://cpx3.allcpx.com/day/chart',
+		url: '/day/chart',
 		type: 'GET',
 		data: {
 			'startDate': start_date.substr(0, 10),
@@ -1032,7 +1032,7 @@ $("#query12").click(function () {
 	};
 
 	$.ajax({
-		url: 'http://cpx3.allcpx.com/aff_mt',
+		url: '/aff_mt',
 		type: 'GET',
 		data: viewDatas,
 		dataType: "json",
@@ -1122,7 +1122,7 @@ $("#first1").click(function () {
 
 function changeMe1() {
 	$.ajax({
-		url: 'http://cpx3.allcpx.com/get_pubid?aff_name=' + $("#affName").val(),
+		url: '/get_pubid?aff_name=' + $("#affName").val(),
 		type: 'GET',
 		dataType: "json",
 		success: function (result) {
@@ -1147,7 +1147,7 @@ function changeMe1() {
 function changeMe() {
 	var a = $("#Quality_Aff_Name").val();
 	$.ajax({
-		url: 'http://cpx3.allcpx.com/get_pubid?aff_name=' + a,
+		url: '/get_pubid?aff_name=' + a,
 		type: 'GET',
 		dataType: "json",
 		success: function (result) {
@@ -1172,7 +1172,7 @@ function changeMe() {
 function changeMeAffEverytime() {
 	var a = $("#Quality_Aff_Name1").val();
 	$.ajax({
-		url: 'http://cpx3.allcpx.com/get_pubid?aff_name=' + a,
+		url: '/get_pubid?aff_name=' + a,
 		type: 'GET',
 		dataType: "json",
 		success: function (result) {
@@ -1198,7 +1198,7 @@ function changeMeAffEverytime() {
 function changeMe2() {
 	var a = $("#Com_aff").val()
 	$.ajax({
-		url: 'http://cpx3.allcpx.com/get_pubid?aff_name=' + a,
+		url: '/get_pubid?aff_name=' + a,
 		type: 'GET',
 		dataType: "json",
 		success: function (result) {
@@ -1222,7 +1222,7 @@ function changeMe2() {
 
 function changeMe3() {
 	$.ajax({
-		url: 'http://cpx3.allcpx.com/get_pubid?aff_name=' + $("#Aff_Name_char").val(),
+		url: '/get_pubid?aff_name=' + $("#Aff_Name_char").val(),
 		type: 'GET',
 		dataType: "json",
 		success: function (result) {
@@ -1386,7 +1386,7 @@ $("#com_submit").click(function () {
 		"DealWithTime": $("#Com_time").val()
 	};
 	$.ajax({
-		url: 'http://cpx3.allcpx.com/addComplaint',
+		url: '/addComplaint',
 		type: 'POST',
 		data: JSON.stringify(com_data),
 		contentType: "application/json",
@@ -1414,7 +1414,7 @@ $("#com_search").click(function () {
 		// "msisdn":"asdsd",
 	};
 	$.ajax({
-		url: 'http://cpx3.allcpx.com/get/complaint/data',
+		url: '/get/complaint/data',
 		type: 'GET',
 		data: com_data,
 		dataType: "json",

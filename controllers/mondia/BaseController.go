@@ -4,6 +4,7 @@ import (
 	"github.com/MobileCPX/PreMondia/enums"
 	"github.com/MobileCPX/PreMondia/models"
 	"github.com/MobileCPX/PreMondia/models/mondia"
+	"github.com/MobileCPX/PreMondia/util"
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/logs"
 	"strconv"
@@ -54,8 +55,8 @@ func (c *BaseController) NewInsertMo(notification *mondia.Notification, affTrack
 
 		if mo.AffName != "" {
 			// 有转化后发邮件
-			//util.BeegoEmail("", "葡萄牙 NOS 有新的转化", "网盟名称： "+mo.AffName,
-			//	[]string{"tengjiaqing@mobilecpx.com", "wangangui@mobilecpx.com"})
+			util.BeegoEmail("", "葡萄牙 NOS 有新的转化", "网盟名称： "+mo.AffName,
+				[]string{"tengjiaqing@mobilecpx.com", "wangangui@mobilecpx.com"})
 		}
 		// 判断是否回传成功
 		if isSuccess {
