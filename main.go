@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"github.com/MobileCPX/PreMondia/controllers/searchAPI"
 	_ "github.com/MobileCPX/PreMondia/initial"
 	"github.com/MobileCPX/PreMondia/models/mondia"
@@ -9,6 +10,9 @@ import (
 	"github.com/astaxie/beego/logs"
 	"github.com/astaxie/beego/plugins/cors"
 	"github.com/robfig/cron"
+	"strconv"
+	"strings"
+	"time"
 )
 
 func init() {
@@ -19,7 +23,6 @@ func init() {
 现在是测试环境，上线后需要替换MO表中的service_ID
  */
 
-
 func main() {
 
 	logs.SetLogger(logs.AdapterFile, `{"filename":"/mondia/logs/mondia.log","level":6,"maxlines":100000000,"daily":true,"maxdays":10000}`)
@@ -27,9 +30,9 @@ func main() {
 	logs.EnableFuncCallDepth(true)
 	//sub.CheckDaySubNum(30)
 	// postbackutil.PostbackRequest()
-
-	mondia.ServiceRegisterRequest("12412", "124124",
-		"GOGAMEHUB", "register")
+	postbackURL := "http://##auto_id##"
+	postbackURL = strings.Replace(postbackURL, "##auto_id##", strconv.Itoa(int(time.Now().Unix())), -1)
+	fmt.Println(postbackURL)
 
 	beego.InsertFilter("*", beego.BeforeRouter, cors.Allow(&cors.Options{
 		AllowAllOrigins: true,

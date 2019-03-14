@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"strconv"
 	"strings"
+	"time"
 )
 
 //Postback 网盟信息
@@ -36,10 +37,10 @@ func StartPostback(mo *Mo, todaySubNum, todayPostbackNum int64) (isSuccess bool,
 }
 
 func getPostbackInfoByAffName(affName, serviceName string) (*Postback, error) {
-	postback := &Postback{AffName: affName}
+	postback := new(Postback)
 	o := orm.NewOrm()
 	if affName != "" {
-		err := o.Read(postback)
+		err := o.QueryTable(PostbackTBName()).Filter("aff_name", affName).One(postback)
 		if err != nil {
 			logs.Error("用户订阅成功，但是没有找到此网盟 ", affName)
 			util.BeegoEmail(serviceName, "没有找到此 "+affName+"信息", affName+" postback回传失败", []string{})
@@ -71,6 +72,7 @@ func (postback *Postback) PostbackRequest(mo *Mo) (isSuccess bool, code string) 
 	postbackURL = strings.Replace(postbackURL, "##pro_id##", mo.ProID, -1)
 	postbackURL = strings.Replace(postbackURL, "##pub_id##", mo.PubID, -1)
 	postbackURL = strings.Replace(postbackURL, "##operator##", mo.Operator, -1)
+	postbackURL = strings.Replace(postbackURL, "##auto_id##", strconv.Itoa(int(time.Now().Unix())), -1)
 
 	postResult, err := http.Get(postbackURL)
 	if err == nil {

@@ -28,7 +28,8 @@ service:
     register_url: "http://www.gogamehub.com/addusername?username={subID}&sign=mondia_pl&subId={subID}"
     LP_url: "http://www.gogamehub.com/lp/mm/pl?affName=ERROR"
     day_limit_sub: 50
-    reserve_service_lp: ""
+    reserve_service_lp: "http://pl.ifunnyhub.com/mm/pl/lp?affName=ERROR"
+    reserve_service_id: "IFUNNY"
   IFUNNY:
     service_id: "IFUNNY"
     service_name: "IFUNNY"
@@ -44,6 +45,7 @@ service:
     LP_url: "http://pl.ifunnyhub.com/mm/pl/lp?affName=ERROR"
     day_limit_sub: 50
     reserve_service_lp: "http://www.gogamehub.com/lp/mm/pl?affName=ERROR"
+    reserve_service_id: "GOGAMEHUB"
   PREPRON4K:
     service_id: "PREPRON4K"
     service_name: "PREPRON4K"
@@ -59,6 +61,7 @@ service:
     LP_url: "http://pl.4kpreporn.com/mm/pl/lp?affName=ERROR"
     day_limit_sub: 50
     reserve_service_lp: "http://pl.pleasureclip.com/mm/pl/lp?affName=ERROR"
+    reserve_service_id: "PLEASURECLICK"
   PLEASURECLICK:
     service_id: "PLEASURECLICK"
     service_name: "PLEASURECLICK"
@@ -73,7 +76,8 @@ service:
     register_url: "http://pl.pleasureclip.com/adduser?user={subID}&pass=123456&sign=mondia_pl"
     LP_url: "http://pl.pleasureclip.com/mm/pl/lp?affName=ERROR"
     day_limit_sub: 50
-    reserve_service_lp: ""
+    reserve_service_lp: "http://pl.4kpreporn.com/mm/pl/lp?affName=ERROR"
+    reserve_service_id: "PREPRON4K"
 #service:
 #  PinkCity4K:
 #    service_id: "PRD_LEADERHK_PT_PINKCITY_GENERIC"

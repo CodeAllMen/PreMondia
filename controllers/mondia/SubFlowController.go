@@ -16,7 +16,7 @@ type SubFlowController struct {
 
 // AffTrack 存储点击
 func (c *SubFlowController) AffTrack() {
-	logs.Info(c.Ctx.Input.URL())
+	logs.Info("AffTrack", c.Ctx.Input.URI())
 	track := new(mondia.AffTrack)
 	track.ServiceID = c.GetString("type")
 	track.AffName = c.GetString("affName")
@@ -31,17 +31,19 @@ func (c *SubFlowController) AffTrack() {
 	trackID, err := track.Insert()
 	// 获取今日订阅数量，判断是否超过订阅限制
 	todaySubNum, err1 := mondia.GetTodayMoNum(track.ServiceID)
-
+	//todaySubNum = 100
 	if err != nil || err1 != nil || int(todaySubNum) >= enums.DayLimitSub {
+		logs.Info(track.ServiceID, "今日超过了订阅限制，订阅数：", todaySubNum, " 今日限制：", enums.DayLimitSub)
 		c.Ctx.WriteString("false")
 	} else {
 		c.Ctx.WriteString(strconv.FormatInt(trackID, 10))
 	}
-	c.redirect("http://google.com")
 }
 
 func (c *SubFlowController) GetCustomerRedirect() {
+	logs.Info(" GetCustomerRedirect", c.Ctx.Input.URI())
 	trackID := c.GetString("frmlp")
+	logs.Info(" GetCustomerRedirect", c.Ctx.Input.URI())
 	track := new(mondia.AffTrack)
 	trackIDInt, err := strconv.Atoi(trackID)
 	if err != nil {
@@ -58,8 +60,8 @@ func (c *SubFlowController) GetCustomerRedirect() {
 }
 
 func (c *SubFlowController) CustomerResultAndStartSub() {
+	logs.Info("CustomerResultAndStartSub", c.Ctx.Input.URI())
 	track := new(mondia.AffTrack)
-	logs.Info("CustomerResultAndStartSub: ", c.Ctx.Input.URI())
 	trackID := c.Ctx.Input.Param(":trackID") // id
 	trackIDInt, err := strconv.Atoi(trackID)
 	if err != nil {
@@ -125,6 +127,7 @@ func (c *SubFlowController) CustomerResultAndStartSub() {
 
 // SubResult 订阅结果通知
 func (c *SubFlowController) SubResult() {
+	logs.Info("SubResult", c.Ctx.Input.URI())
 	subResult := new(mondia.MdSubscribe)
 	subResult.TrackID = c.Ctx.Input.Param(":trackID")
 	subResult.SubStatus = c.GetString("subStatus")
@@ -183,13 +186,17 @@ func (c *SubFlowController) CheckTodaySubNum() {
 	if err1 == nil && int(todaySubNum) >= limitSub {
 		resp.IsLimitSub = true
 		reserveLPURL := mondia.RedirectOtherServiceLP(serviceID)
-		if reserveLPURL != "" {
+
+		reserveServiceID := mondia.GetOtherServiceID(serviceID)
+		todaySubNum, err1 = mondia.GetTodayMoNum(reserveServiceID)
+		limitSub = mondia.GetDifferentServiceDayLimitSub(reserveServiceID)
+		if reserveLPURL != "" && int(todaySubNum) <= limitSub {
 			resp.IsRedirect = true
 			resp.LpURL = reserveLPURL
 		}
 	}
 	fmt.Println(resp)
-	c.Data["JSON"] = resp
+	c.Data["json"] = resp
 	c.ServeJSON()
 	//c.Ctx.WriteString(string(limitSubStr))
 }

@@ -40,7 +40,7 @@ func init() {
 	beego.Router("/check/sub/num", &mondia.SubFlowController{}, "Get:CheckTodaySubNum")
 
 	// 跳转到AOC页面 POST
-	beego.Router("/payment", &mondia.SubFlowController{}, "Post:GetCustomerRedirect")
+	//beego.Router("/payment", &mondia.SubFlowController{}, "Post:GetCustomerRedirect")
 	// 订阅续订退订通知
 	beego.Router("/notification", &mondia.NotificationController{})
 

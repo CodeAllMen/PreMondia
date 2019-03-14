@@ -33,6 +33,7 @@ type ServiceInfo struct {
 	UnsubURL         string `yaml:"unsub_url" orm:"column(unsub_url)"`
 	RegisterURL      string `yaml:"register_url" orm:"column(register_url)"`
 	ReserveServiceLP string `yaml:"reserve_service_lp" orm:"column(reserve_service_lp)"`
+	ReserveServiceID string `yaml:"reserve_service_id"`
 }
 
 var ServiceData = make(map[string]ServiceInfo)
@@ -155,4 +156,9 @@ func GetDifferentServiceDayLimitSub(serviceID string) int {
 
 func RedirectOtherServiceLP(serviceID string) string {
 	return ServiceData[serviceID].ReserveServiceLP
+}
+
+
+func GetOtherServiceID(serviceID string) string{
+	return ServiceData[serviceID].ReserveServiceID
 }
