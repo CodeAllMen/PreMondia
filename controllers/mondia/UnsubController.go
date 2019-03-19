@@ -104,14 +104,12 @@ func (c *UnsubController) UnsubRequest() {
 						unsubNotification := new(models.MondiaCharge)
 						xmlErr := xml.Unmarshal(body, unsubNotification)
 						if xmlErr != nil {
-							//c.TplName = "fail.tpl"
 							c.UnsubFailed(serviceID)
 							return
 						}
 						err := unsub.InsertUnsubData(unsubNotification)
 						if err == nil && unsubNotification.ResponseCode == "1001" { // 取消订阅成功
 							_, _ = mo.UnsubUpdateMo(mo.SubscriptionID)
-							//c.Data["url"] = mondia.GetContentURL(mo.ServiceID)
 							c.Data["url"] = mondia.GetContentURL(mo.ProductCode)
 							c.TplName = "success.tpl"
 							return
@@ -121,25 +119,20 @@ func (c *UnsubController) UnsubRequest() {
 							return
 						}
 					} else {
-						//  "用户不存在"
-						//c.TplName = "fail.tpl"
 						c.UnsubFailed(serviceID)
-
 						return
 					}
 				} else {
-					//  "用户不存在"
-					//c.TplName = "fail.tpl"
+
 					c.UnsubFailed(serviceID)
 					return
 				}
 			} else {
-				//c.TplName = "fail.tpl"
+
 				c.UnsubFailed(serviceID)
 				return
 			}
 		} else {
-			//c.TplName = "fail.tpl"
 			c.UnsubFailed(serviceID)
 			return
 		}
@@ -150,101 +143,3 @@ func (c *UnsubController) UnsubRequest() {
 		c.TplName = "pin.tpl"
 	}
 }
-
-type request struct {
-	UserIdToken    userIDToken `xml:"userIdToken"`
-	SubscriptionId string      `xml:"subscriptionId"`
-	// Service        string      `xml:"service"`
-}
-type userIDToken struct {
-	Username string `xml:"username"`
-	Password string `xml:"password"`
-}
-
-////  UnsubWap3G WAP 3G环境下退订
-//func (c *UnsubController) UnsubWap3G() {
-//	subID := c.GetString("user_id")
-//	serviceName := c.GetString("service_name", "PinkCity4K")
-//
-//	unsubReqData := new(request)
-//	unsubResult := unsubReqData.unsubRequest(subID, serviceName)
-//
-//	if unsubResult == "0" {
-//		fmt.Println("退订成功")
-//		c.TplName = "unsub_success.html"
-//	} else {
-//		c.Data["display"] = "none"
-//		c.TplName = "unsub_failed.html"
-//	}
-//}
-
-//// 电话号码退订
-//func (c *UnsubController) MsisdnUnsub() {
-//	msisdn := c.GetString("msisdn")
-//	serviceName := c.GetString("service_name", "PinkCity4K")
-//	mo := new(mondia.Mo)
-//	// 通过电话号码和ServiceName查询Mo信息
-//	mo.GetMoByMsisdnAndServiceName(msisdn, serviceName)
-//	if mo.SubscriptionID != "" {
-//		unsubReqData := new(request)
-//		unsubResult := unsubReqData.unsubRequest(mo.SubscriptionID, serviceName)
-//		if unsubResult == "0" {
-//			fmt.Println("退订成功")
-//			c.TplName = "unsub_success.html"
-//		} else {
-//			c.Data["error_text"] = "* O número de telefone está errado, por favor, reinsira"
-//			c.TplName = "unsub_failed.html"
-//		}
-//	} else {
-//		c.Data["error_text"] = `Este número de telefone não está inscrito no serviço, verifique seu número de telefone: ` + msisdn
-//		c.TplName = "unsub_success.html"
-//	}
-//}
-
-//func (unsubReqData *request) unsubRequest(subID, serviceName string) string {
-//	var token userIDToken
-//	token.Username = "leaderapi"
-//	token.Password = "LDgo1@1@"
-//	unsubReqData.SubscriptionId = subID
-//	unsubReqData.UserIdToken = token
-//	data, _ := xml.MarshalIndent(unsubReqData, "", "  ") // 组装xml 数据  返回 []byte类型
-//	fmt.Println(string(data))
-//	xmlRequestData := `<?xml version="1.0" encoding="UTF-8"?>
-//	<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns1="http://www.go4mobility.com/ws/skysms/wapBilling/v2_0/service">
-//		<SOAP-ENV:Body>
-//			<ns1:cancelSubscription>` + string(data) + `</ns1:cancelSubscription>
-//			</SOAP-ENV:Body>
-//		</SOAP-ENV:Envelope>`
-//
-//	v2XMLRequestURL := mondia.ServiceData[serviceName].WapBillingV2URL
-//	respData := util.HttpPostRequest([]byte(xmlRequestData), v2XMLRequestURL, "text/xml;charset=utf-8")
-//
-//	unsubResult := strings.Split(string(respData), "<result>")[1]
-//	result := strings.Split(unsubResult, "</result>")[0]
-//	return result
-//}
-
-//func unsubRequest(subID, serviceName string) string {
-//unsubRequest := new(request)
-//var token userIDToken
-//token.Username = "leaderapi"
-//token.Password = "LDgo1@1@" //西班牙测试
-//unsubRequest.SubscriptionId = subID
-//// unsubRequest.Service = "TEST_MNT"
-//unsubRequest.UserIdToken = token
-//data, _ := xml.MarshalIndent(&unsubRequest, "", "  ") // 组装xml 数据  返回 []byte类型
-//fmt.Println(string(data))
-//xmlRequestData := `<?xml version="1.0" encoding="UTF-8"?>
-//<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns1="http://www.go4mobility.com/ws/skysms/wapBilling/v2_0/service">
-//	<SOAP-ENV:Body>
-//		<ns1:cancelSubscription>` + string(data) + `</ns1:cancelSubscription>
-//		</SOAP-ENV:Body>
-//	</SOAP-ENV:Envelope>`
-//
-//v2XMLRequestURL := mondia.ServiceData[serviceName].WapBillingV2URL
-//respData := util.HttpPostRequest([]byte(xmlRequestData), v2XMLRequestURL, "text/xml;charset=utf-8")
-//
-//unsubResult := strings.Split(string(respData), "<result>")[1]
-//result := strings.Split(unsubResult, "</result>")[0]
-//return result
-//}

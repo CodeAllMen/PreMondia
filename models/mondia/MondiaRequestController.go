@@ -21,7 +21,7 @@ type MondiaRequestData struct {
 func SubSceessSendSMS(contentURL, customerID, subID string) {
 	// Send 账号
 	requestData := new(MondiaRequestData)
-	requestData.Message = "Witamy w RedLightVideos. Adres URL to " + contentURL + ". Twój numer konta to " + subID
+	requestData.Message = "Witamy w " + subID + ". Adres URL to " + contentURL + ". Twój numer konta to " + subID
 	requestData.RequestType = "SendSMS"
 	requestData.CustomerID = customerID
 

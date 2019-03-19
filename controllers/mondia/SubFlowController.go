@@ -7,9 +7,10 @@ import (
 	"github.com/MobileCPX/PreMondia/util"
 	"github.com/astaxie/beego/logs"
 	"strconv"
+	"strings"
 )
 
-// LPTrackControllers 存储点击
+// 订阅流程
 type SubFlowController struct {
 	BaseController
 }
@@ -31,7 +32,7 @@ func (c *SubFlowController) AffTrack() {
 	trackID, err := track.Insert()
 	// 获取今日订阅数量，判断是否超过订阅限制
 	todaySubNum, err1 := mondia.GetTodayMoNum(track.ServiceID)
-	//todaySubNum = 100
+
 	if err != nil || err1 != nil || int(todaySubNum) >= enums.DayLimitSub {
 		logs.Info(track.ServiceID, "今日超过了订阅限制，订阅数：", todaySubNum, " 今日限制：", enums.DayLimitSub)
 		c.Ctx.WriteString("false")
@@ -47,7 +48,7 @@ func (c *SubFlowController) GetCustomerRedirect() {
 	track := new(mondia.AffTrack)
 	trackIDInt, err := strconv.Atoi(trackID)
 	if err != nil {
-		logs.Info("trackID string to int failed ,redirect google page")
+		logs.Info("trackID string to int failed ,redirect google page trackID:", trackID)
 		c.redirect("http://www.google.com")
 	}
 
@@ -113,7 +114,7 @@ func (c *SubFlowController) CustomerResultAndStartSub() {
 		c.redirect("http://www.google.com")
 	}
 	//限制每分钟只能产生3个订阅
-	isLimit := mo.LimitTenMinutesSubNum(track.ServiceID, 2)
+	isLimit := mo.LimitTenMinutesSubNum(track.ServiceID, 4)
 
 	if isLimit {
 		logs.Info("十分钟之内超过3个订阅，跳转到google页面")
@@ -177,28 +178,57 @@ type JsonResp struct {
 	LpURL      string `json:"lp_url"`
 }
 
+var serviceIDs = map[string]bool{"PLEASURECLICK": true, "PREPRON4K": true}
+
 func (c *SubFlowController) CheckTodaySubNum() {
 	serviceID := c.GetString("service_id")
 	resp := new(JsonResp)
+	mo := new(mondia.Mo)
 
 	todaySubNum, err1 := mondia.GetTodayMoNum(serviceID)
 	limitSub := mondia.GetDifferentServiceDayLimitSub(serviceID)
-	if err1 == nil && int(todaySubNum) >= limitSub {
+
+	isLimit := mo.LimitTenMinutesSubNum(serviceID, 4)
+
+	if err1 == nil && (int(todaySubNum) >= limitSub || isLimit) {
 		resp.IsLimitSub = true
 		reserveLPURL := mondia.RedirectOtherServiceLP(serviceID)
 
 		reserveServiceID := mondia.GetOtherServiceID(serviceID)
 		todaySubNum, err1 = mondia.GetTodayMoNum(reserveServiceID)
+
 		limitSub = mondia.GetDifferentServiceDayLimitSub(reserveServiceID)
-		if reserveLPURL != "" && int(todaySubNum) <= limitSub {
+
+		isLimit = mo.LimitTenMinutesSubNum(reserveServiceID, 4)
+		if reserveLPURL != "" && int(todaySubNum) < limitSub && !isLimit {
 			resp.IsRedirect = true
 			resp.LpURL = reserveLPURL
+			if strings.Contains(c.GetString("s"), "affName=") {
+				resp.LpURL = strings.Replace(resp.LpURL, "affName=ERROR", c.GetString("s"), -1)
+			}
+
+		} else {
+			for serID := range serviceIDs {
+				logs.Info(serID)
+				todaySubNum, err1 = mondia.GetTodayMoNum(serID)
+				limitSub = mondia.GetDifferentServiceDayLimitSub(serID)
+
+				isLimit = mo.LimitTenMinutesSubNum(serID, 4)
+				if err1 == nil && int(todaySubNum) < limitSub && !isLimit {
+					resp.IsRedirect = true
+					LpURL := mondia.GetServiceLP(serID)
+					resp.LpURL = LpURL
+					if strings.Contains(c.GetString("s"), "affName=") {
+						resp.LpURL = strings.Replace(LpURL, "affName=ERROR", c.GetString("s"), -1)
+					}
+					break
+				}
+			}
 		}
 	}
-	fmt.Println(resp)
+	logs.Info("CheckTodaySubNum", "!!!!!!", resp)
 	c.Data["json"] = resp
 	c.ServeJSON()
-	//c.Ctx.WriteString(string(limitSubStr))
 }
 
 func printRedirectAocLog(track *mondia.AffTrack) {

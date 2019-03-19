@@ -265,7 +265,7 @@ func (mo *Mo) CheckTodaySubNumMoreLimit(serviceID string) (isCanSub bool) {
 
 func (mo *Mo) LimitTenMinutesSubNum(serviceID string, limitSubNum int) (isLimit bool) {
 	o := orm.NewOrm()
-	nowTime, _ := util.GetDatetime()
+	nowTime, _ := util.GetNowTimeFormat()
 	nowMinutes := nowTime[0:15]
 	subNum, _ := o.QueryTable("mo").Filter("sub_time__gt", nowMinutes).
 		Filter("service_id", serviceID).Count()
