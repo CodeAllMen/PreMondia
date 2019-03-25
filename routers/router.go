@@ -57,4 +57,6 @@ func init() {
 	beego.Router("/getCust", &mondia.UnsubController{}, "Post:UnsubRequest")  // 获取pin之后判断CustomerID 然后退订
 	// 通过订阅ID 退订服务
 	//beego.Router("/unsub/subid", &unsub.SubIDUnsubRequest{})
+
+	beego.Router("/check/user", &mondia.CheckUserSubStatusController{})
 }

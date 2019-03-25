@@ -5,6 +5,7 @@ import (
 	"github.com/MobileCPX/PreMondia/enums"
 	"github.com/MobileCPX/PreMondia/models/mondia"
 	"github.com/MobileCPX/PreMondia/util"
+	"github.com/astaxie/beego/httplib"
 	"github.com/astaxie/beego/logs"
 	"strconv"
 	"strings"
@@ -93,6 +94,13 @@ func (c *SubFlowController) CustomerResultAndStartSub() {
 			mondia.InsertAlreadSubData(track)
 			// 跳转到内容站
 			c.redirect(contentURL)
+		}
+	}
+
+	if track.CustomerID != "" {
+		isExist, _ := httplib.Get("http://pl.mnt-hk.com//check/user?user=" + track.CustomerID).String()
+		if isExist == "YES" {
+			c.redirect("http://www.google.com")
 		}
 	}
 
