@@ -186,7 +186,7 @@ type JsonResp struct {
 	LpURL      string `json:"lp_url"`
 }
 
-var serviceIDs = map[string]bool{"PLEASURECLICK": true, "PREPRON4K": true}
+var serviceIDs = map[string]bool{"PLEASURECLICK": true, "PREPRON4K": true, "IFUNNY": true}
 
 func (c *SubFlowController) CheckTodaySubNum() {
 	serviceID := c.GetString("service_id")
