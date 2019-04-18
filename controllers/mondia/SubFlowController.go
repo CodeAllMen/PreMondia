@@ -33,7 +33,7 @@ func (c *SubFlowController) AffTrack() {
 	// 获取今日订阅数量，判断是否超过订阅限制
 	todaySubNum, err1 := mondia.GetTodayMoNum(track.ServiceID)
 
-	if err != nil || err1 != nil || int(todaySubNum) >= enums.DayLimitSub {
+	if err != nil || err1 != nil || int(todaySubNum) >= enums.DayLimitSub || track.AffName == "pocketmedia" {
 		c.Ctx.WriteString("false")
 	} else {
 		c.Ctx.WriteString(strconv.FormatInt(trackID, 10))

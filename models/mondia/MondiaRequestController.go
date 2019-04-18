@@ -22,7 +22,7 @@ type MondiaRequestData struct {
 func SubSceessSendSMS(serviceConfig ServiceInfo, contentURL, customerID, subID string) {
 	// Send 账号
 	requestData := new(MondiaRequestData)
-	requestData.Message = strings.Replace(serviceConfig.ContentURL, "{subID}", subID, -1)
+	requestData.Message = strings.Replace(serviceConfig.SuccessSubMessage, "{subID}", subID, -1)
 	requestData.RequestType = "SendSMS"
 	requestData.CustomerID = customerID
 
