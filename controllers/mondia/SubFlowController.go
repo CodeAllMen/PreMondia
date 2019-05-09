@@ -34,6 +34,13 @@ func (c *SubFlowController) AffTrack() {
 	// 获取今日订阅数量，判断是否超过订阅限制
 	todaySubNum, err1 := mondia.GetTodayMoNum(track.ServiceID)
 
+	// 网盟黑名单
+	if track.AffName == "dooeeads" || track.AffName == "trafficcompany" {
+		logs.Info("网盟黑名单: 禁止订阅，网盟名称：", track.AffName)
+		c.Ctx.WriteString("false")
+		return
+	}
+
 	if err != nil || err1 != nil || int(todaySubNum) >= enums.DayLimitSub {
 		logs.Info(track.ServiceID, "今日超过了订阅限制，订阅数：", todaySubNum, " 今日限制：", enums.DayLimitSub)
 		c.Ctx.WriteString("false")
