@@ -28,6 +28,7 @@ type Notification struct {
 	Channel            string `xml:"Channel"`
 	NextAction         string `xml:"NextAction"`
 	NextActionDate     string `xml:"NextActionDate"`
+	CampaignID         string `xml:"CampaignID"`
 }
 
 //// GoNotification 订阅，续订、退订通知

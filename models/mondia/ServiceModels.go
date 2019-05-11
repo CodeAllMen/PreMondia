@@ -113,7 +113,7 @@ func GetPaymentURL(serviceID string, trackID string) (paymentURL string, isExist
 
 	paymentURL = "http://sso.orange.com/mondiamedia_subscription/?method=subscribe&merchantId=93&redirect=" +
 		"http%3a%2f%2fcpx3.allcpx.com%2fsubs%2fres%2f" + trackID + "&imgPath=" + service.ImgPath + "&productCd=" +
-		service.ProductCode + "&subPackage=" + service.SubPackage + "&operatorId=8&langCode=pl"
+		service.ProductCode + "&subPackage=" + service.SubPackage + "&operatorId=8&langCode=pl&campaignId=" + trackID
 	fmt.Println("paymentURL: ", paymentURL)
 	return
 }

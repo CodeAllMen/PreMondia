@@ -24,15 +24,30 @@ func (c *NotificationController) Post() {
 	if err == nil { // 更新mo表（新增订阅，退订，续订）
 		if modiaNotification.Action == "SUBSCRIBE" {
 			track := new(mondia.AffTrack)
-			//_ = track.GetAffTrackByCustomerID(modiaNotification.CustomerID)
-			subResult := new(mondia.MdSubscribe)
-			subResult.GetSubResultBySubID(modiaNotification.SubscriptionID)
-			if subResult.TrackID != "" {
-				trackIDInt, err := strconv.Atoi(subResult.TrackID)
-				if err == nil {
-					_ = track.GetAffTrackByTrackID(int64(trackIDInt))
+			if modiaNotification.CampaignID == "" {
+				subResult := new(mondia.MdSubscribe)
+				subResult.GetSubResultBySubID(modiaNotification.SubscriptionID)
+				if subResult.ID != 0 && err == nil {
+					trackIntID, _ := strconv.Atoi(subResult.TrackID)
+					_ = track.GetAffTrackByTrackID(int64(trackIntID))
 				}
+			} else {
+				logs.Info("modiaNotification.CampaignID  不为空：", modiaNotification.CampaignID)
+				trackIntID, _ := strconv.Atoi(modiaNotification.CampaignID)
+				_ = track.GetAffTrackByTrackID(int64(trackIntID))
 			}
+
+			//track := new(mondia.AffTrack)
+			////_ = track.GetAffTrackByCustomerID(modiaNotification.CustomerID)
+			//subResult := new(mondia.MdSubscribe)
+			//subResult.GetSubResultBySubID(modiaNotification.SubscriptionID)
+
+			//if subResult.TrackID != "" {
+			//	trackIDInt, err := strconv.Atoi(subResult.TrackID)
+			//	if err == nil {
+			//		_ = track.GetAffTrackByTrackID(int64(trackIDInt))
+			//	}
+			//}
 
 			notificationType = c.NewInsertMo(modiaNotification, track)
 		} else if modiaNotification.Action == "UNSUBSCRIBE" {
