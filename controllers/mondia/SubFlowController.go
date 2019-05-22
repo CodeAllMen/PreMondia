@@ -23,7 +23,13 @@ func (c *SubFlowController) AffTrack() {
 	track.ServiceID = c.GetString("type")
 	track.AffName = c.GetString("affName")
 	track.ClickID = c.GetString("clickId")
+	if track.ClickID == ""{
+		track.ClickID = c.GetString("click")
+	}
 	track.PubID = c.GetString("pubId")
+	if track.PubID == ""{
+		track.PubID = c.GetString("pub")
+	}
 	track.ProID = c.GetString("proId")
 	track.IP = util.GetIPAddress(c.Ctx.Request)
 	track.Refer = c.Ctx.Input.Refer()
@@ -128,13 +134,14 @@ func (c *SubFlowController) CustomerResultAndStartSub() {
 		logs.Info("product_code 不存在，跳转到google页面")
 		c.redirect("http://www.google.com")
 	}
-	//限制每分钟只能产生3个订阅
-	isLimit := mo.LimitTenMinutesSubNum(track.ServiceID, 4)
 
-	if isLimit {
-		logs.Info("十分钟之内超过3个订阅，跳转到google页面")
-		c.redirect("http://www.google.com")
-	}
+	//限制每分钟只能产生3个订阅
+	//isLimit := mo.LimitTenMinutesSubNum(track.ServiceID, 4)
+
+	//if isLimit {
+	//	logs.Info("十分钟之内超过3个订阅，跳转到google页面")
+	//	c.redirect("http://www.google.com")
+	//}
 
 	printRedirectAocLog(track)
 	c.redirect(paymentURL)
