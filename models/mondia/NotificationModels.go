@@ -29,6 +29,15 @@ type Notification struct {
 	NextAction         string `xml:"NextAction"`
 	NextActionDate     string `xml:"NextActionDate"`
 	CampaignID         string `xml:"CampaignID"`
+
+	//CustomerIDs string `orm:"column(customer_i_d)" xml:"CustomerID"`
+	//ServiceIDs  string `orm:"column(service_i_d)" xml:"ServiceID"`
+	//ServiceType string `orm:"service_type"`
+	//AffName        string `orm:"column(aff_name);size(30)"`     // 网盟名称
+	//PubID          string `orm:"column(pub_id);size(100)"`      // 子渠道
+	//ProID          string `orm:"column(pro_id);size(30)"`       // 服务id（可有可无）
+	//ClickID        string `orm:"column(click_id);size(300)"`    // 点击
+	//ClickType       string `orm:"column(click_type);size(300)"`    // 点击
 }
 
 //// GoNotification 订阅，续订、退订通知

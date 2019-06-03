@@ -24,6 +24,9 @@ func init() {
  */
 
 func main() {
+	//backData.SendMo()
+	////
+	//backData.SendNotification()
 
 	mo := new(mondia.Mo)
 	s := mo.LimitTenMinutesSubNum("REDLIGHTVIDEOS",2)

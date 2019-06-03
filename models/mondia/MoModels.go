@@ -18,7 +18,7 @@ type Mo struct {
 	SubStatus      int    `orm:"column(sub_status);size(1)"`      // 订阅状态 1（订阅）0 （退订）
 	PostbackStatus int    `orm:"column(postback_status);size(1)"` // postback 状态
 	PostbackTime   string `orm:"column(postback_time);size(20)"`  // postback 时间
-	PostbackCode   string `orm:"column(postback_code);size(20)"`  // 回传是否成功
+	PostbackCode   string `orm:"column(postback_code);size(3000)"`  // 回传是否成功
 	Payout         float32
 	SuccessMT      int    `orm:"column(success_mt)"`            // 扣费成功次数
 	FailedMT       int    `orm:"column(failed_mt)"`             // 失败扣费次数
@@ -28,7 +28,7 @@ type Mo struct {
 	AffName        string `orm:"column(aff_name);size(30)"`     // 网盟名称
 	PubID          string `orm:"column(pub_id);size(100)"`      // 子渠道
 	ProID          string `orm:"column(pro_id);size(30)"`       // 服务id（可有可无）
-	ClickID        string `orm:"column(click_id);size(100)"`    // 点击
+	ClickID        string `orm:"column(click_id);size(300)"`    // 点击
 	IP             string `orm:"column(ip);size(20)"`           // 用户IP地址
 	UserAgent      string `orm:"column(user_agent)"`            // 用户user_agent
 	Refer          string `orm:"column(refer)"`                 // 网页来源
