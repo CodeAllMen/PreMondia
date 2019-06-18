@@ -1,12 +1,15 @@
 package backData
 
 import (
-	"github.com/MobileCPX/PreBaseLib/sp/admindata"
+	"fmt"
+	"github.com/MobileCPX/PreBaseLib/splib/admindata"
 	"github.com/MobileCPX/PreMondia/models/mondia"
 	"github.com/astaxie/beego/logs"
 	"github.com/astaxie/beego/orm"
 	"strings"
 )
+
+var ch = make(chan int, 1)
 
 var ServiceCamp = map[string]int{"REDLIGHTVIDEOS": 21, "GOGAMEHUB": 19, "IFUNNY": 20, "PREPRON4K": 22, "PLEASURECLICK": 23}
 
@@ -38,12 +41,15 @@ func UpdateMO() {
 	}
 }
 
+var subIDMap = make(map[string]int)
+
 func SendMo() {
-	UpdateMO()
+	//UpdateMO()
 	o := orm.NewOrm()
 	mos := new([]mondia.Mo)
 	o.QueryTable("mo").OrderBy("id").All(mos)
-	for _, mo := range *mos {
+	fmt.Println(len(*mos))
+	for i, mo := range *mos {
 		sendNoti := new(admindata.Notification)
 		promoterID := 1
 		if mo.SubTime < "2019-04-18" {
@@ -52,12 +58,14 @@ func SendMo() {
 			promoterID = 2
 		}
 
+		sendNoti.PostbackPrice = 2.8
+
 		sendNoti.OfferID = 0
 		sendNoti.SubscriptionID = mo.SubscriptionID
 		sendNoti.ServiceID = mo.ProductCode
 		sendNoti.ClickID = mo.ClickID
 		sendNoti.Msisdn = mo.CustomerID
-		logs.Info("mo.CustomerID",mo.CustomerID)
+		logs.Info("mo.CustomerID", mo.CustomerID)
 		sendNoti.CampID = ServiceCamp[mo.ProductCode]
 		sendNoti.PubID = mo.PubID
 		sendNoti.PostbackStatus = mo.PostbackStatus
@@ -71,8 +79,29 @@ func SendMo() {
 		sendNoti.PromoterID = promoterID
 		sendNoti.Sendtime = mo.SubTime
 		sendNoti.NotificationType = "SUB"
-		sendNoti.SendData()
+
+		logs.Info("!!!!!!!!!!!!!!!!!", i)
+		ch <- 1
+		//defer func() {
+		//	<-ch
+		//}()
+		//sendNoti.SendData(admindata.PROD)
+
+		go sendData(sendNoti)
 
 	}
 
+}
+
+func sendData(sendNoti *admindata.Notification) {
+	defer func() {
+		d := <-ch
+		fmt.Println(d)
+	}()
+	if num, isEixt := subIDMap[sendNoti.SubscriptionID]; isEixt {
+		subIDMap[sendNoti.SubscriptionID]++
+		logs.Info(sendNoti.SubscriptionID, "!!!!!!!", num)
+	}
+
+	sendNoti.SendData(admindata.PROD)
 }

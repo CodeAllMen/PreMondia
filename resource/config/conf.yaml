@@ -12,7 +12,7 @@ service:
     content_url: "http://www.redlightvideos.com"
     register_url: "http://www.redlightvideos.com/addsubs?sign=mondia&user={subID}"
     LP_url: "http://www.redlightvideos.com/lp/mm/pl/index.html?affName=ERROR"
-    day_limit_sub: 0
+    day_limit_sub: 50
     reserve_service_lp: ""
   GOGAMEHUB:
     service_id: "GOGAMEHUB"
@@ -27,7 +27,7 @@ service:
     content_url: "http://www.gogamehub.com/mm/pl?subId={subID}"
     register_url: "http://www.gogamehub.com/addusername?username={subID}&sign=mondia_pl&subId={subID}"
     LP_url: "http://www.gogamehub.com/lp/mm/pl?affName=ERROR"
-    day_limit_sub: 0
+    day_limit_sub: 50
     reserve_service_lp: "http://pl.ifunnyhub.com/mm/pl/lp?affName=ERROR"
     reserve_service_id: "IFUNNY"
   IFUNNY:

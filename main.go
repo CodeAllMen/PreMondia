@@ -25,11 +25,11 @@ func init() {
 
 func main() {
 	//backData.SendMo()
-	////
+	//
 	//backData.SendNotification()
 
 	mo := new(mondia.Mo)
-	s := mo.LimitTenMinutesSubNum("REDLIGHTVIDEOS",2)
+	s := mo.LimitTenMinutesSubNum("REDLIGHTVIDEOS", 2)
 	logs.Info(s)
 
 	logs.SetLogger(logs.AdapterFile, `{"filename":"/mondia/logs/mondia.log","level":6,"maxlines":100000000,"daily":true,"maxdays":10000}`)
