@@ -7,6 +7,7 @@ import (
 	"github.com/MobileCPX/PreMondia/util"
 	"github.com/astaxie/beego/httplib"
 	"github.com/astaxie/beego/logs"
+	"github.com/qiniu/api.v6/url"
 	"strconv"
 	"strings"
 )
@@ -23,11 +24,11 @@ func (c *SubFlowController) AffTrack() {
 	track.ServiceID = c.GetString("type")
 	track.AffName = c.GetString("affName")
 	track.ClickID = c.GetString("clickId")
-	if track.ClickID == ""{
+	if track.ClickID == "" {
 		track.ClickID = c.GetString("click")
 	}
 	track.PubID = c.GetString("pubId")
-	if track.PubID == ""{
+	if track.PubID == "" {
 		track.PubID = c.GetString("pub")
 	}
 	track.ProID = c.GetString("proId")
@@ -68,8 +69,8 @@ func (c *SubFlowController) GetCustomerRedirect() {
 
 	err = track.GetAffTrackByTrackID(int64(trackIDInt))
 
-	customerRedirectURL := "http://sso.orange.com/mondiamedia_subscription/?method=getcustomer&merchantId=93&langCode=pl" +
-		"&redirect=http://cpx3.allcpx.com:8085/subs/getcust/" + trackID + "?product_code=" + track.ServiceID
+	customerRedirectURL := "http://sso.orange.com/mondiamedia_subscription/?method=getcustomer&merchantId=93&langCode=pl&operatorId=8" +
+		"&redirect=" + url.QueryEscape("http://cpx3.allcpx.com:8085/subs/getcust/"+trackID) + "&product_code=" + track.ServiceID
 	fmt.Println(customerRedirectURL)
 	c.redirect(customerRedirectURL)
 }
@@ -186,8 +187,10 @@ func (c *SubFlowController) SubResult() {
 		c.redirect("https://www.google.com")
 	} else {
 		LpURL, isExist := mondia.GetLpURL(track.ServiceID)
+		fmt.Println(LpURL)
 		if isExist {
-			c.redirect(LpURL)
+			//c.redirect(LpURL)
+			c.redirect("https://www.google.com?errorCode=" + subResult.SubStatus)
 		} else {
 			c.redirect("https://www.google.com")
 		}
