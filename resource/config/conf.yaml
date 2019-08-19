@@ -33,7 +33,7 @@ service:
     mrchant_id: "247"
     prod_price: "2"
     img_path: "http://iq.c4fungames.com/static/img/bg.png"
-    operator_id: "1"
+    operator_id: "27"
     sub_package: "D"
     content_url: "http://iq.c4fungames.com?subID={subID}"
     register_url: "http://iq.c4fungames.com/addsubs?sign=mondia&user={subID}"
