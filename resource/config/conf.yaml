@@ -31,7 +31,7 @@ service:
     operator: "27"
     request_url: "http://login.mondiamediamena.com/billinggw-lcm/billing"
     mrchant_id: "247"
-    prod_price: "2"
+    prod_price: "200"
     img_path: "http://iq.c4fungames.com/static/img/bg.png"
     operator_id: "27"
     sub_package: "D"
@@ -43,7 +43,7 @@ service:
     unsub_get_customer_callback_url: "http://mm-eg.leadernethk.com/unsub/get/customer/KKP"
     sub_result_redirect: "http://mm-eg.leadernethk.com/get/sub_result/"
     unsub_pin_message: "رقم التعريف الشخصي هو {PIN}"
-    language: "eg"
+    language: "iq"
     success_sub_message: "تهانينا على اشتراكك الناجح في خدمة C4FunGame ، يرجى زيارة http://iq.c4fungames.com ، فإن حسابك هو {subID}"
 #service:
 #  KKP:
