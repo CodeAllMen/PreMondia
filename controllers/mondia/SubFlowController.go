@@ -152,8 +152,12 @@ func (c *SubFlowController) SubResult() {
 		c.redirect("https://www.google.com")
 	} else {
 		LpURL, isExist := mondia.GetLpURL(track.ServiceID)
+
 		if isExist {
-			c.redirect(LpURL)
+			c.Data["ErrorCode"] = subResult.ErrorCode
+			c.Data["ErrorMessage"] = subResult.ErrorDesc
+			c.Data["Lp"] = LpURL
+			c.TplName = "views/error.html"
 		} else {
 			c.redirect("https://www.google.com")
 		}
