@@ -1,27 +1,27 @@
 package mondia
 
 import (
+	"errors"
 	"github.com/MobileCPX/PreMondia/util"
 	"github.com/astaxie/beego/logs"
 	"github.com/astaxie/beego/orm"
-	"github.com/pkg/errors"
 	"net/http"
 	"strconv"
 	"strings"
 )
 
-//Postback 网盟信息
+// Postback 网盟信息
 type Postback struct {
-	ID           int64  `orm:"pk;auto;column(id)"`                //自增ID
-	AffName      string `orm:"column(aff_name);size(30)"`         // 网盟名称
-	PostbackURL  string `orm:"column(postback_url);size(180)"`    // postback URL
-	PostbackRate int    `orm:"column(postback_rate);default(70)"` // 回传概率
-	Payout       float32                                          // 转化单价
+	ID           int64   `orm:"pk;auto;column(id)"`                // 自增ID
+	AffName      string  `orm:"column(aff_name);size(30)"`         // 网盟名称
+	PostbackURL  string  `orm:"column(postback_url);size(180)"`    // postback URL
+	PostbackRate int     `orm:"column(postback_rate);default(70)"` // 回传概率
+	Payout       float32 // 转化单价
 }
 
 // StartPostback 订阅成功后向网盟回传订阅数据
-//请求 todaySubNum 该网盟今日订阅数，  todayPostbackNum 该网盟今日回传数   根据这两个算概率，是否回传
-//返回数据 isSuccess 是否回传   code 网络请求的返回code   payout  请求成功后的花费
+// 请求 todaySubNum 该网盟今日订阅数，  todayPostbackNum 该网盟今日回传数   根据这两个算概率，是否回传
+// 返回数据 isSuccess 是否回传   code 网络请求的返回code   payout  请求成功后的花费
 func StartPostback(mo *Mo, todaySubNum, todayPostbackNum int64) (isSuccess bool, code string, payout float32) {
 	postback, err := getPostbackInfoByAffName(mo.AffName, mo.ServiceID)
 	if err != nil {
@@ -36,11 +36,11 @@ func StartPostback(mo *Mo, todaySubNum, todayPostbackNum int64) (isSuccess bool,
 }
 
 func getPostbackInfoByAffName(affName, serviceName string) (*Postback, error) {
-	//postback := &Postback{AffName: affName}
+	// postback := &Postback{AffName: affName}
 	postback := new(Postback)
 	o := orm.NewOrm()
 	if affName != "" {
-		//err := o.Read(postback)
+		// err := o.Read(postback)
 		err := o.QueryTable(PostbackTBName()).Filter("aff_name", affName).One(postback)
 		if err != nil {
 			logs.Error("用户订阅成功，但是没有找到此网盟 ", affName)

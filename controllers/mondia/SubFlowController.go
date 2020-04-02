@@ -115,6 +115,7 @@ func (c *SubFlowController) CustomerResultAndStartSub() {
 
 // SubResult 订阅结果通知
 func (c *SubFlowController) SubResult() {
+	logs.Info("")
 	subResult := new(mondia.MdSubscribe)
 	subResult.TrackID = c.Ctx.Input.Param(":trackID")
 	subResult.SubStatus = c.GetString("subStatus")
